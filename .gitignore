@@ -11,3 +11,5 @@ nodejshelloworld.iml
 .project
 node_modules/
 npm-debug.log
+sample-app.iml
+target/
