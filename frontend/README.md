@@ -11,7 +11,7 @@
 
 ## Deploy to Bluemix CloudFoundry
 
-1. Connect to Bluemix '''cf api https://api.ng.bluemix.net'''
-2. Login to Bluemix API '''cf login -u maxim.tschumak@campus.tu-berlin.de -o suxxex@freenet.de -s ec\_assignment'''
-3. Deploy to Bluemix '''cf push reimbursement-frontend'''
+1. Connect to Bluemix `cf api https://api.ng.bluemix.net`
+2. Login to Bluemix API `cf login -u maxim.tschumak@campus.tu-berlin.de -o suxxex@freenet.de -s ec\_assignment`
+3. Deploy to Bluemix `cf push reimbursement-frontend`
 4. Check the production instances: http://reimbursement-frontend.mybluemix.net/
