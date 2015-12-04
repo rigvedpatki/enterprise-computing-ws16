@@ -9,4 +9,7 @@
 
 ## Deploy to Elastic Beanstalk
 
-//TODO
+1. Clean up the project's directory `mvn clean`
+2. Zip the whole project directory `zip -r app.zip backend/*`
+3. Upload the archive to Elastic Beanstalk (over the management console)
+4. The API is available at http://reimbursement-backend.elasticbeanstalk.com/
