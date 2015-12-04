@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cfenv = require('cfenv');
 var app = express();
+var api = require('./api');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
@@ -18,13 +19,15 @@ app.listen(appEnv.port, '0.0.0.0', function() {
 
 // EMPLOYEE main screen (add a request and list all requests)
 app.get('/employee', function (req, res) {
-  res.render('employee', { title: 'Hey', message: 'Hello Employee!'});
+    res.render('employee', { title: 'Hey', message: 'Hello Employee!'});
 });
 
 // EMPLOYEE edit request screen (edit the values of one particular request)
 app.get('/employee/:id', function (req, res) {
-  var requestId = req.params['id'];
-  res.render('employee-edit', { title: 'Hey', message: 'Hello Employee! Let\'s edit the request ' + requestId });
+    var requestId = req.params['id'];
+    api.dummyFunction(requestId, function(err, response){
+        res.render('employee-edit', { title: 'Hey', message: response });
+    });
 });
 
 // MANAGER screen (list of all pending requests)
