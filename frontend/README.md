@@ -2,7 +2,7 @@
 
 ## Run the app locally
 
-1. [Install Node.js][]
+1. Install Node.js
 2. Download and extract the starter code from the Bluemix UI
 3. cd into the app directory
 4. Run `npm install` to install the app's dependencies
