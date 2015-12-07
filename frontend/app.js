@@ -5,6 +5,12 @@ var bodyParser = require('body-parser');
 var cfenv = require('cfenv');
 var app = express();
 var api = require('./api');
+var auth = require('basic-auth');
+
+var MANAGER_USERNAME = 'manager';
+var MANAGER_PASSWORD = 'O`M:fX3O"E[gxfT}S+/l';
+var EMPLOYEE_USERNAME = 'empployee';
+var EMPLOYEE_PASSWORD = ')AybMslaS/p|o[si;xlv';
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
@@ -19,7 +25,14 @@ app.listen(appEnv.port, '0.0.0.0', function () {
 
 // EMPLOYEE main screen (add a request and list all requests)
 app.get('/employee', function (req, res) {
-    res.render('employee', {title: 'Hey', message: 'Hello Employee!'});
+    var credentials = auth(req);
+    if (!credentials || credentials.name !== EMPLOYEE_USERNAME || credentials.pass !== EMPLOYEE_PASSWORD) {
+        res.statusCode = 401;
+        res.setHeader('WWW-Authenticate', 'Basic realm="example"');
+        res.end('Access denied');
+    } else {
+        res.render('employee', {title: 'Hey', message: 'Hello Employee!'});
+    }
 });
 
 // EMPLOYEE edit request screen (edit the values of one particular request)

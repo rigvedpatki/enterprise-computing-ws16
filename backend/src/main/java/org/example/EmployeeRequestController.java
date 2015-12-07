@@ -28,13 +28,18 @@ public class EmployeeRequestController {
         return dynamo.getRequestById(id);
     }
 
+    @RequestMapping(path = "/requests/{id}", method = RequestMethod.PUT)
+    public void updateRequest(@PathVariable String id, @RequestBody EmployeeRequest request) {
+        dynamo.updateRequest(id, request);
+    }
+
     @RequestMapping(path = "/requests", method = RequestMethod.GET)
     public List<EmployeeRequest> getRequests() {
         return dynamo.getAllRequests();
     }
 
     @RequestMapping(path = "/requests", method = RequestMethod.POST)
-    public void putRequest(@RequestParam("name") String name, /*add other values as request params*/
+    public void createRequest(@RequestParam("name") String name, /*add other values as request/query parameters*/
                            @RequestParam(value = "file", required = false) MultipartFile file) {
         final EmployeeRequest request = new EmployeeRequest();
         //TODO fill the request object with values
@@ -46,7 +51,7 @@ public class EmployeeRequestController {
         // s3.storeFile(requestId, ..
 
 
-        //TODO create a message and send the to the manager
+        //TODO create a message and send to the manager
         // mail.sendMail(...
         return;
     }
@@ -54,7 +59,7 @@ public class EmployeeRequestController {
     @RequestMapping(path = "/requests/{id}/status", method = RequestMethod.PUT)
     public void putStatus(@PathVariable String id, @RequestParam("status") String status) {
         dynamo.setStatus(id, status);
-        //TODO create a message and send the to the employee
+        //TODO create a message and send to the employee
         // mail.sendMail(...
     }
 }
