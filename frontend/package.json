@@ -1,7 +1,7 @@
 {
-  "name": "NodejsStarterApp",
-  "version": "0.0.1",
-  "description": "A sample nodejs app for Bluemix",
+  "name": "ReimbursementApp",
+  "version": "1.0.0",
+  "description": "Reimbursement web based application",
   "scripts": {
     "start": "node app.js"
   },

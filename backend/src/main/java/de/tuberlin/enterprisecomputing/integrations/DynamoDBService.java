@@ -1,6 +1,6 @@
-package org.example.integrations;
+package de.tuberlin.enterprisecomputing.integrations;
 
-import org.example.domain.EmployeeRequest;
+import de.tuberlin.enterprisecomputing.domain.EmployeeRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,8 +1,8 @@
 var http = require('http');
 
-var apiURL = 'http://reimbursement-backend.elasticbeanstalk.com/';
-var apiUser = 'api-user';
-var apiPassword = 'O9VOG;|g$ia_Jc;EQ<&5';
+var ENDPOINT_URL = 'http://reimbursement-backend.elasticbeanstalk.com/';
+var BASIC_AUTH_USER = 'api-user';
+var BASIC_AUTH_PASSQORD = 'O9VOG;|g$ia_Jc;EQ<&5';
 
 exports.getRequest = function (requestId, callback) {
     //TODO

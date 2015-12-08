@@ -1,9 +1,9 @@
-package org.example;
+package de.tuberlin.enterprisecomputing;
 
-import org.example.domain.EmployeeRequest;
-import org.example.integrations.DynamoDBService;
-import org.example.integrations.MailService;
-import org.example.integrations.S3Service;
+import de.tuberlin.enterprisecomputing.integrations.S3Service;
+import de.tuberlin.enterprisecomputing.domain.EmployeeRequest;
+import de.tuberlin.enterprisecomputing.integrations.DynamoDBService;
+import de.tuberlin.enterprisecomputing.integrations.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +40,7 @@ public class EmployeeRequestController {
 
     @RequestMapping(path = "/requests", method = RequestMethod.POST)
     public void createRequest(@RequestParam("name") String name, /*add other values as request/query parameters*/
-                           @RequestParam(value = "file", required = false) MultipartFile file) {
+                              @RequestParam(value = "file", required = false) MultipartFile file) {
         final EmployeeRequest request = new EmployeeRequest();
         //TODO fill the request object with values
 

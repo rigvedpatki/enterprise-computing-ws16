@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.example</groupId>
-    <artifactId>sample-app</artifactId>
-    <version>1.0</version>
+    <groupId>de.tu-berlin.enterprise-computing</groupId>
+    <artifactId>reimbursement-backend</artifactId>
+    <version>0.1</version>
     <packaging>jar</packaging>
-    <name>Java Sample App</name>
+    <name>Reimbursement Backend Application</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <mainApplication>org.example.Application</mainApplication>
+        <mainApplication>de.tuberlin.enterprisecomputing.Application</mainApplication>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>

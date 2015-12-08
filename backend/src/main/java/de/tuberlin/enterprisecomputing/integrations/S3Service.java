@@ -1,4 +1,4 @@
-package org.example.integrations;
+package de.tuberlin.enterprisecomputing.integrations;
 
 import org.springframework.stereotype.Service;
 
