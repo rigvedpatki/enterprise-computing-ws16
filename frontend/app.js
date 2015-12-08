@@ -32,8 +32,7 @@ app.get('/employee', function (req, res) {
     	                    {name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf'},
     	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
     	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
-    	          			]
-    }
+    	          			];
         res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
@@ -70,7 +69,7 @@ app.get('/manager', function (req, res) {
       	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
       	          		    {name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
       	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
-      	          			]
+      	          			];
         res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
