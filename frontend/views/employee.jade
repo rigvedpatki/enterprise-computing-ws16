@@ -11,7 +11,7 @@ html
   div
     fieldset
       legend Submit reimbursement
-      form(action='/employee/requests',method='post')
+      form(action='/requests',method='post')
       p Name:
         input(name='name',type='text')
       p Where:
@@ -45,4 +45,13 @@ html
            th
              | Update
         tbody 
-        
+          each reimbursement in reimbursements
+            tr
+              td=reimbursement.name
+              td=reimbursement.where
+              td=reimbursement.why
+              td=reimbursement.when
+              td=reimbursement.amount
+              td=reimbursement.document
+              td
+                | Update

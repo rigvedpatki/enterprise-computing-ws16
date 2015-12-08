@@ -27,7 +27,14 @@ app.listen(appEnv.port, '0.0.0.0', function () {
 app.get('/employee', function (req, res) {
     if (employeeAuth(req)) {
         //TODO
-        res.render('employee', {title: 'Hey', message: 'Hello Employee!'});
+    	// test array
+    	var reimbursements = [
+    	                    {name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf'},
+    	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
+    	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
+    	          			]
+    }
+        res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -39,8 +46,10 @@ app.get('/employee', function (req, res) {
 app.get('/employee/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
+        //test array
+        var reimbursement = {name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'};
         api.dummyFunction(requestId, function (err, response) {
-            res.render('employee-edit', {title: 'Hey', message: response});
+            res.render('employee-edit', {title: 'Hey', message: response, reimbursement: reimbursement});
         });
     } else {
         res.statusCode = 401;
@@ -52,7 +61,17 @@ app.get('/employee/:id', function (req, res) {
 // MANAGER screen (list of all pending requests)
 app.get('/manager', function (req, res) {
     if (managerAuth(req)) {
-        res.render('manager', {title: 'Hey', message: 'Hello Manager!'});
+    	// test array
+    	var reimbursements = [
+      	                    {name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf'},
+      	                    {name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
+      	                    {name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
+      	                    {name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
+      	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
+      	          		    {name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
+      	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
+      	          			]
+        res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');

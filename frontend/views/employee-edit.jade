@@ -5,19 +5,19 @@ html
     h1!= message
     div
     fieldset
-      legend Submit reimbursement
-      form(action='/employee/requests/:id',method='post')
+      legend Update reimbursement
+      form(action='../requests/:id',method='post')
       p Name:
-        input(name='name',type='text',value=reimbursement['name'])
+        input(name='name',type='text',value=reimbursement.name)
       p Where:
-        input(name='where',type='text',value=reimbursement['where'])
+        input(name='where',type='text',value=reimbursement.where)
       p Why:
-        input(name='why',type='text',value=reimbursement['why'])
+        input(name='why',type='text',value=reimbursement.why)
       p When:
-        input(name='when',type='date',value=reimbursement['when'])
+        input(name='when',type='date',value=reimbursement.when)
       p Amount:
-        input(name='amount',type='number',value=reimbursement['amount'])
+        input(name='amount',type='number',value=reimbursement.amount)
       p Document:
-        input(name='document',type='file',value=reimbursement['document'])
+        input(name='document',type='file',value=reimbursement.document)
       p  
         input(type="submit", value='Update reimbursement')

@@ -22,4 +22,14 @@ html
            th
              | Action
         tbody 
+          each reimbursement in reimbursements
+            tr
+              td=reimbursement.name
+              td=reimbursement.where
+              td=reimbursement.why
+              td=reimbursement.when
+              td=reimbursement.amount
+              td=reimbursement.document
+              td
+                | Accept - Decline
         
