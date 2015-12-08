@@ -13,8 +13,8 @@ import java.util.List;
 @RestController
 public class EmployeeRequestController {
 
-    final static String MANAGER_EMAIL = "manager@mail.com";
-    final static String EMPLOYEE_EMAIL = "employee@mail.com";
+    final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
+    final static String EMPLOYEE_EMAIL = "ec2015employee@gmail.com";
 
     @Autowired
     DynamoDBService dynamo;
