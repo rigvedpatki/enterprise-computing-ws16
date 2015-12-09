@@ -55,9 +55,9 @@ app.get('/employee/:id', function (req, res) {
           	          		    {id:'6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
           	        			{id:'7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
           	          			];
-        var reimbursement = [];
+        var reimbursement = {id:'0'};
         for (var i = 0; i < reimbursements.length; i++) { 
-            if(reimbursements[i]['id'] == requestId) {
+            if(':' + reimbursements[i]['id'] == requestId) {
             	reimbursement = reimbursements[i];
             }
         }
