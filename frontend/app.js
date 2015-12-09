@@ -18,7 +18,16 @@ app.set('views', './views');
 app.set('view engine', 'jade');
 
 var appEnv = cfenv.getAppEnv();
-
+//test array with all the reimbursements
+var reimbursements = [
+	                    {id:'1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
+	                    {id:'2', name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+	                    {id:'3', name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+	                    {id:'4', name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'declined'},
+	          			{id:'5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
+	          		    {id:'6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
+	        			{id:'7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
+	          			];
 app.listen(appEnv.port, '0.0.0.0', function () {
     console.log("server starting on " + appEnv.url);
 });
@@ -27,12 +36,6 @@ app.listen(appEnv.port, '0.0.0.0', function () {
 app.get('/employee', function (req, res) {
     if (employeeAuth(req)) {
         //TODO
-    	// test array
-    	var reimbursements = [
-      	                    {id: '1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
-      	          			{id: '5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
-      	        			{id: '7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
-      	          			];
         res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
@@ -45,18 +48,11 @@ app.get('/employee', function (req, res) {
 app.get('/employee/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
-        //test array
-        var reimbursements = [
-        	                    {id:'1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
-          	                    {id:'2', name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
-          	                    {id:'3', name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
-          	                    {id:'4', name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'declined'},
-          	          			{id:'5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
-          	          		    {id:'6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
-          	        			{id:'7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
-          	          			];
+        // TODO
         var reimbursement = {id:'0'};
         for (var i = 0; i < reimbursements.length; i++) { 
+        	// requestID looks like this: ':1', ':2'. Shouldn't be an issue alter on since later the reimbursement 
+        	// is directly received from the backend. (hopefully)
             if(':' + reimbursements[i]['id'] == requestId) {
             	reimbursement = reimbursements[i];
             }
@@ -74,16 +70,7 @@ app.get('/employee/:id', function (req, res) {
 // MANAGER screen (list of all pending requests)
 app.get('/manager', function (req, res) {
     if (managerAuth(req)) {
-    	// test array
-    	var reimbursements = [
-      	                    {id: '1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
-      	                    {id: '2', name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
-      	                    {id: '3', name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
-      	                    {id: '4', name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'declined'},
-      	          			{id: '5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
-      	          		    {id: '6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
-      	        			{id: '7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
-      	          			];
+    	// TODO
         res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
