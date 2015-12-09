@@ -13,6 +13,8 @@ html
        thead
          tr
            th
+             | Reimbursement-ID
+           th
              | Name
            th
              | Where
@@ -25,16 +27,26 @@ html
            th
              | Document
            th
+             | Status
+           th
              | Action
         tbody 
           each reimbursement in reimbursements
             tr
+              td=reimbursement.id
               td=reimbursement.name
               td=reimbursement.where
               td=reimbursement.why
               td=reimbursement.when
               td=reimbursement.amount
               td=reimbursement.document
+              td=reimbursement.status
               td
-                | Accept - Decline
+                form(action='/employee/requests/:' + reimbursement.id + '/status', method='post')
+                  select(name='status')
+                    option(value='accept')
+                      | Accepted
+                    option(value='decline')
+                      | Declined
+                  input(type="submit", value='Update reimbursement-status')
         

@@ -11,47 +11,55 @@ html
   div
     fieldset
       legend Submit reimbursement
-      form(action='/requests',method='post')
-      p Name:
-        input(name='name',type='text')
-      p Where:
-        input(name='where',type='text')
-      p Why:
-        input(name='why',type='text')
-      p When:
-        input(name='when',type='date')
-      p Amount:
-        input(name='amount',type='number')
-      p Document:
-        input(name='document',type='file')
-      p  
-        input(type="submit", value='Submit reimbursement')  
+      form(action='/employee/requests',method='post')
+        p Name:
+          input(name='name',type='text')
+        p Where:
+          input(name='where',type='text')
+        p Why:
+          input(name='why',type='text')
+        p When:
+          input(name='when',type='date')
+        p Amount:
+          input(name='amount',type='number')
+        p Document:
+          input(name='document',type='file')
+        p  
+          input(type="submit", value='Submit reimbursement')  
   div
-     table(style='width:100%') 
-       thead
-         tr
-           th
-             | Name
-           th
-             | Where
-           th
-             | Why
-           th
-             | When
-           th
-             | Amount
-           th
-             | Document
-           th
-             | Update
-        tbody 
-          each reimbursement in reimbursements
-            tr
-              td=reimbursement.name
-              td=reimbursement.where
-              td=reimbursement.why
-              td=reimbursement.when
-              td=reimbursement.amount
-              td=reimbursement.document
-              td
-                | Update
+    p
+      table(style='width:100%') 
+        thead
+          tr
+            th
+              | Reimbursement-ID
+            th
+              | Name
+            th
+              | Where
+            th
+              | Why
+            th
+              | When
+            th
+              | Amount
+            th
+              | Document
+            th
+              | Status
+            th
+              | Update
+          tbody 
+            each reimbursement in reimbursements
+              tr
+                td=reimbursement.id
+                td=reimbursement.name
+                td=reimbursement.where
+                td=reimbursement.why
+                td=reimbursement.when
+                td=reimbursement.amount
+                td=reimbursement.document
+                td=reimbursement.status
+                td
+                  form(action='/employee/:' + reimbursement.id, method='get')
+                    input(type="submit", value='Update reimbursement') 

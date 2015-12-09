@@ -29,10 +29,10 @@ app.get('/employee', function (req, res) {
         //TODO
     	// test array
     	var reimbursements = [
-    	                    {name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf'},
-    	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
-    	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
-    	          			];
+      	                    {id: '1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
+      	          			{id: '5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
+      	        			{id: '7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
+      	          			];
         res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: reimbursements});
     } else {
         res.statusCode = 401;
@@ -46,7 +46,21 @@ app.get('/employee/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
         //test array
-        var reimbursement = {name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'};
+        var reimbursements = [
+        	                    {id:'1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
+          	                    {id:'2', name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+          	                    {id:'3', name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+          	                    {id:'4', name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'declined'},
+          	          			{id:'5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
+          	          		    {id:'6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
+          	        			{id:'7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
+          	          			];
+        var reimbursement = [];
+        for (var i = 0; i < reimbursements.length; i++) { 
+            if(reimbursements[i]['id'] == requestId) {
+            	reimbursement = reimbursements[i];
+            }
+        }
         api.dummyFunction(requestId, function (err, response) {
             res.render('employee-edit', {title: 'Hey', message: response, reimbursement: reimbursement});
         });
@@ -62,13 +76,13 @@ app.get('/manager', function (req, res) {
     if (managerAuth(req)) {
     	// test array
     	var reimbursements = [
-      	                    {name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf'},
-      	                    {name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
-      	                    {name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
-      	                    {name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'},
-      	          			{name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
-      	          		    {name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx'},
-      	        			{name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx'}
+      	                    {id: '1', name:'Hans', where:'Berlin', why:'Party', when:'11.05.2014', amount:'1337', document:'expenses.pdf', status: 'accepted'},
+      	                    {id: '2', name:'Thomas', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+      	                    {id: '3', name:'Klaus', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'},
+      	                    {id: '4', name:'Hannes', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'declined'},
+      	          			{id: '5', name:'Hans', where:'Berlin', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'accepted'},
+      	          		    {id: '6', name:'Claudia', where:'Bremen', why:'Party', when:'12.05.2014', amount:'160', document:'expenses.docx', status: 'declined'},
+      	        			{id: '7', name:'Hans', where:'Berlin', why:'Party', when:'13.05.2014', amount:'134', document:'expenses.xlsx', status: 'unknown'}
       	          			];
         res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: reimbursements});
     } else {
@@ -91,7 +105,7 @@ app.post('/employee/requests', function (req, res) {
 });
 
 // should be used to overwrite the request's values (by employee)
-app.put('/employee/requests/:id', function (req, res) {
+app.post('/employee/requests/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
         //TODO
@@ -104,7 +118,7 @@ app.put('/employee/requests/:id', function (req, res) {
 });
 
 // should be used to overwrite the request's status (by manager)
-app.put('/manager/requests/:id/status', function (req, res) {
+app.post('/manager/requests/:id/status', function (req, res) {
     if (managerAuth(req)) {
         var requestId = req.params['id'];
         //TODO
