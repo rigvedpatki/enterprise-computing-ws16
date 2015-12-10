@@ -61,5 +61,5 @@ html
                 td=reimbursement.document
                 td=reimbursement.status
                 td
-                  form(action='/employee/:' + reimbursement.id, method='get')
+                  form(action='/employee/' + reimbursement.id, method='get')
                     input(type="submit", value='Update reimbursement') 

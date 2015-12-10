@@ -42,7 +42,7 @@ html
               td=reimbursement.document
               td=reimbursement.status
               td
-                form(action='/employee/requests/:' + reimbursement.id + '/status', method='post')
+                form(action='/manager/requests/' + reimbursement.id + '/status', method='post')
                   select(name='status')
                     option(value='accept')
                       | Accepted
