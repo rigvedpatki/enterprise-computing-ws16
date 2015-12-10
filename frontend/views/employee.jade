@@ -11,7 +11,7 @@ html
   div
     fieldset
       legend Submit reimbursement
-      form(action='/employee/requests',method='post')
+      form(action='/employee/requests', enctype='multipart/form-data', method='post')
         p Name: 
           input(name='name',type='text')
         p Where: 
@@ -23,9 +23,9 @@ html
         p Amount: 
           input(name='amount',type='number')
         p Document: 
-          input(name='document',type='file')
+          input(name='document',type='file', size='50')
         p  
-          input(type="submit", value='Submit reimbursement')  
+          input(name='submit', type='submit', value='Submit reimbursement')
   div
     p
       table(style='width:100%') 

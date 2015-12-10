@@ -4,8 +4,14 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cfenv = require('cfenv');
 var app = express();
-var api = require('./api');
 var auth = require('basic-auth');
+var multer = require('multer');
+var path = require('path');
+var upload = multer({
+    dest: 'uploads/'
+});
+
+var api = require('./api');
 
 var MANAGER_USERNAME = 'manager';
 var MANAGER_PASSWORD = 'O`M:fX3O"E[gxfT}S+/l';
@@ -14,20 +20,13 @@ var EMPLOYEE_PASSWORD = ')AybMslaS/p|o[si;xlv';
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-app.set('views', './views');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 var appEnv = cfenv.getAppEnv();
-//test array with all the reimbursements
-var reimbursements = [
-	                    {id:'1', name:'Hans', where:'Berlin', why:'Party', when:'2014-05-15', amount:'1337', document:'expenses.pdf', status: 'accepted'},
-	                    {id:'2', name:'Thomas', where:'Berlin', why:'Party', when:'2015-02-22', amount:'13984', document:'expenses.xlsx', status: 'unknown'},
-	                    {id:'3', name:'Klaus', where:'Moskau', why:'Accident', when:'2015-02-15', amount:'1324', document:'expenses.xlsx', status: 'unknown'},
-	                    {id:'4', name:'Hannes', where:'Hamburg', why:'Travel', when:'2014-05-15', amount:'1634', document:'expenses.xlsx', status: 'declined'},
-	          			{id:'5', name:'Hans', where:'Berlin', why:'Party', when:'2012-05-16', amount:'16067', document:'expenses.docx', status: 'accepted'},
-	          		    {id:'6', name:'Claudia', where:'Bremen', why:'Travel', when:'2014-03-15', amount:'420', document:'expenses.docx', status: 'declined'},
-	        			{id:'7', name:'Hans', where:'Berlin', why:'Party', when:'2013-12-15', amount:'4267', document:'expenses.xlsx', status: 'unknown'}
-	          			];
+
 app.listen(appEnv.port, '0.0.0.0', function () {
     console.log("server starting on " + appEnv.url);
 });
@@ -35,8 +34,14 @@ app.listen(appEnv.port, '0.0.0.0', function () {
 // EMPLOYEE main screen (add a request and list all requests)
 app.get('/employee', function (req, res) {
     if (employeeAuth(req)) {
-        //TODO
-        res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: reimbursements});
+        api.getRequests(function (err, requests) {
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.render('employee', {title: 'Hey', message: 'Hello Employee!', reimbursements: requests});
+            }
+        });
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -49,16 +54,13 @@ app.get('/employee/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
         // TODO
-        var reimbursement = {id:'0'};
-        for (var i = 0; i < reimbursements.length; i++) { 
-        	// requestID looks like this: ':1', ':2'. Shouldn't be an issue alter on since later the reimbursement 
-        	// is directly received from the backend. (hopefully)
-            if(':' + reimbursements[i]['id'] == requestId) {
-            	reimbursement = reimbursements[i];
+        api.getRequest(requestId, function (err, request) {
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.render('employee-edit', {title: 'Hey', reimbursement: request});
             }
-        }
-        api.dummyFunction(requestId, function (err, response) {
-            res.render('employee-edit', {title: 'Hey', message: response, reimbursement: reimbursement});
         });
     } else {
         res.statusCode = 401;
@@ -70,8 +72,14 @@ app.get('/employee/:id', function (req, res) {
 // MANAGER screen (list of all pending requests)
 app.get('/manager', function (req, res) {
     if (managerAuth(req)) {
-    	// TODO
-        res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: reimbursements});
+        api.getRequests(function (err, requests) {
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.render('manager', {title: 'Hey', message: 'Hello Manager!', reimbursements: requests});
+            }
+        });
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -80,10 +88,24 @@ app.get('/manager', function (req, res) {
 });
 
 // creates a new request (used by the form in the employee screen)
-app.post('/employee/requests', function (req, res) {
+app.post('/employee/requests', upload.single('document'), function (req, res) {
     if (employeeAuth(req)) {
-        //TODO
-        // api.createRequest(..
+        var file = req.file.path;
+        var requestValues = {
+            name: req.body['name'],
+            where: req.body['where'],
+            why: req.body['why'],
+            when: req.body['when'],
+            amount: req.body['amount']
+        };
+        api.createRequest(requestValues, file, function (err, id) {
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.redirect('/employee');
+            }
+        });
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -95,8 +117,21 @@ app.post('/employee/requests', function (req, res) {
 app.post('/employee/requests/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
-        //TODO
-        // api.updateRequest(..
+        var requestValues = {
+            name: req.body['name'],
+            where: req.body['where'],
+            why: req.body['why'],
+            when: req.body['when'],
+            amount: req.body['amount']
+        };
+        api.updateRequest(requestId, requestValues, function(err){
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.redirect('/employee');
+            }
+        });
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
@@ -108,8 +143,15 @@ app.post('/employee/requests/:id', function (req, res) {
 app.post('/manager/requests/:id/status', function (req, res) {
     if (managerAuth(req)) {
         var requestId = req.params['id'];
-        //TODO
-        // api.setStatus(..
+        var requestStatus = req.body['status'];
+        api.setStatus(requestId, requestStatus, function(err){
+            if (err) {
+                res.statusCode = 500;
+                res.send(err);
+            } else {
+                res.redirect('/manager');
+            }
+        });
     } else {
         res.statusCode = 401;
         res.setHeader('WWW-Authenticate', 'Basic realm="example"');
