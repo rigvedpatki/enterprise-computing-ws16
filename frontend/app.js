@@ -90,7 +90,7 @@ app.get('/manager', function (req, res) {
 // creates a new request (used by the form in the employee screen)
 app.post('/employee/requests', upload.single('document'), function (req, res) {
     if (employeeAuth(req)) {
-        var file = req.file.path;
+        var file = req.file;
         var requestValues = {
             name: req.body['name'],
             where: req.body['where'],
