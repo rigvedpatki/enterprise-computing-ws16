@@ -16,11 +16,13 @@ import com.amazonaws.services.dynamodbv2.document.TableKeysAndAttributes;
 import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DynamoDBService {
@@ -69,22 +71,40 @@ public class DynamoDBService {
 
     public ArrayList<EmployeeRequest> getAllRequests() {
         //TODO
-/*    	ArrayList<EmployeeRequest> allRequests = new ArrayList<EmployeeRequest>();
+    	//Creating an ArrayList of EmployeeRequests to be returned
+    	ArrayList<EmployeeRequest> allRequests = new ArrayList<EmployeeRequest>();
+    	//Creating a temporary instance of EmployeeRequest
+    	EmployeeRequest temp = new EmployeeRequest();
     	
-    	ScanResult result= null;
-    	
+    	Map<String, AttributeValue> lastKeyEvaluated = null;
+    	//A single scan can not return data more than 1 MB, hence using loop
     	do{
-    		ScanRequest req = new ScanRequest().withAttributesToGet("requestId","");
-    		req.setTableName(tableName);
-    		
-    		if(result != null){
-    			req.setExclusiveStartKey(result.getLastEvaluatedKey());
-    		}
-    		
-    		result = dynamoDBClient.scan(req);
-    	}*/
+    		//New ScanRequest on the table employee_reimbursements with a limit of 10 entries
+    		ScanRequest req = new ScanRequest()
+    				.withTableName(tableName)
+    				.withLimit(10)
+    				.withExclusiveStartKey(lastKeyEvaluated);
+    		//collecting the result of the scan
+    		ScanResult result = dynamoDBClient.scan(req);
+    		//Adding the scanned result into the ArrayList of EmployeeRequests
+    	    for (Map<String, AttributeValue> item : result.getItems()){
+    	    	
+    	    	temp.setRequestId(item.get("requestId").toString());
+    	    	temp.setName(item.get("name").toString());
+    	    	temp.setTimestamp(item.get("timestamp").toString());
+    	    	temp.setWhen(item.get("when").toString());
+    	    	temp.setWhy(item.get("why").toString());
+    	    	temp.setWhere(item.get("where").toString());
+    	    	temp.setAmount(Integer.parseInt(item.get("amount").toString()));
+    	    	
+    	    	allRequests.add(temp);
+    	    	//Clearing the temporary employeeRequest
+    	    	temp = null;
+    	    }
     	
-        return new ArrayList<>();
+    	}while(lastKeyEvaluated != null);
+    		
+        return allRequests;
     }
 
     public EmployeeRequest getRequestById(final String id) {
@@ -125,6 +145,12 @@ public class DynamoDBService {
     	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("requestStatus").put(status));
     	
     }
+    
+/*    private EmployeeRequest addToArrayList(Map<String, AttributeValue> item)
+    {
+    	
+    	return null;
+    }*/
 
     
 }
