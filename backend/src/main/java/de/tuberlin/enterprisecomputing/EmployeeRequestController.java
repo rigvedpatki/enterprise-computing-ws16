@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,20 +39,40 @@ public class EmployeeRequestController {
         return dynamo.getAllRequests();
     }
 
-    @RequestMapping(path = "/requests", method = RequestMethod.POST)
-    public void createRequest(@RequestParam("name") String name, /*add other values as request/query parameters*/
+    @RequestMapping(value = "employeeRequest", path = "/requests", method = RequestMethod.POST)
+    //Receiving JSON data sent by the client --> map it to employeeRequest object 
+    public void createRequest(@RequestBody final EmployeeRequest employeeRequest, 
                               @RequestParam(value = "file", required = false) MultipartFile file) {
-        final EmployeeRequest request = new EmployeeRequest();
-        //TODO fill the request object with values
+		
 
-
-        final String requestId = dynamo.createRequestEntry(request);
+        final String requestId = dynamo.createRequestEntry(employeeRequest);
         //TODO store the request in the db and store the binary in s3 bucket
         // some help: https://spring.io/guides/gs/uploading-files/
-        // s3.storeFile(requestId, ..
+        //Storing the file into S3 system
+        if (!file.isEmpty()){
+        	
+        	try {
+				byte[] bytes = file.getBytes();
+				//Converting byte[] to Byte[]
+				
+				Byte[] oByte = new Byte[bytes.length];
+				int i=0;
+				for(byte b : bytes){
+					oByte[i++] = b;
+				}
+				i=0;
+				
+				s3.storeFile(requestId, oByte);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+        }
 
 
         //TODO create a message and send to the manager
+        mail.sendMail(MANAGER_EMAIL, " ");
         // mail.sendMail(...
         return;
     }
