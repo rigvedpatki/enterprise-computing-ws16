@@ -1,18 +1,44 @@
 package de.tuberlin.enterprisecomputing.integrations;
 
 import org.springframework.stereotype.Service;
+import com.amazonaws.services.simpleemail.*;
+import com.amazonaws.services.simpleemail.model.*;
+import com.amazonaws.regions.*;
 
 @Service
 public class MailService {
 
-    private static final String FROM = "user@mail.com";
-
+	//Declare Email addresses of manager and employee
+    private static final String MANAGER = "ec2015manager@gmail.com";
+    private static final String EMPLOYEE = "ec2015employee@gmail.com";
+    
+    //declare client
+    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();  
+    
+    // declare request for manager 
+    SendEmailRequest managerRequest = new SendEmailRequest()
+			.withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
+			.withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
+					.withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
+    
+    // declare request for employee 
+    SendEmailRequest employeeRequest = new SendEmailRequest()
+			.withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
+			.withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
+					.withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
+     
     public MailService(){
-        //TODO initialize SES client
+        //TODO initialize SES client, set region
+    	Region REGION = Region.getRegion(Regions.US_WEST_2);  
+    	client.setRegion(REGION);
     }
 
-    public void sendMail(final String to, final String content){
+    public void sendMail(final String to){
         //TODO send email
+    	if (to == MANAGER)
+    	client.sendEmail(managerRequest);
+    	else
+    	client.sendEmail(employeeRequest);
     }
     
     // Returns Email template for the manager
