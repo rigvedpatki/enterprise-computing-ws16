@@ -29,7 +29,7 @@ public class MailService {
      
     public MailService(){
         //TODO initialize SES client, set region
-    	Region REGION = Region.getRegion(Regions.US_WEST_2);  
+    	Region REGION = Region.getRegion(Regions.EU_WEST_1);  
     	client.setRegion(REGION);
     }
 
