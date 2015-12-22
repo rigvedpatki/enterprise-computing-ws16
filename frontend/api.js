@@ -2,10 +2,11 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 
-var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
+//var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
+var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
-var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL;
+var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL + ':8080';
 
 exports.getRequest = function (requestId, callback) {
     request(BASE_URL + '/requests/' + requestId, function (err, response, body) {
@@ -29,12 +30,16 @@ exports.getRequests = function (callback) {
 
 exports.createRequest = function (requestValues, file, callback) {
     requestValues.fileName = file.originalname;
-    requestValues.document = fs.createReadStream(file.path);
+    requestValues.file = fs.createReadStream(file.path);
 
     request.post({
         url: BASE_URL + '/requests',
-        formData: requestValues
+        formData: requestValues,
+        headers: {
+            'enctype': 'multipart/form-data'
+        }
     }, function optionalCallback(err, httpResponse, body) {
+        console.log("err: %j, httoResonse: %j, body: %j", err, httpResponse, body);
         if (err) {
             callback(err)
         } else {

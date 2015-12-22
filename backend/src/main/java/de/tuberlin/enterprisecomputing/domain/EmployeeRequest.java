@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class EmployeeRequest {
     private String id;
     private String name;
-    private String timestamp;
     private String when;
     private String why;
     private String where;
