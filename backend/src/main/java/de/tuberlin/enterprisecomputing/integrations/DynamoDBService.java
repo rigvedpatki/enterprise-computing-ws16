@@ -23,6 +23,7 @@ import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class DynamoDBService {
@@ -48,6 +49,9 @@ public class DynamoDBService {
         
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	//Generating Random UUID as requestId
+    	String uniqueRequestId = UUID.randomUUID().toString();
+    	request.setRequestId(uniqueRequestId);
     	try
     	{
     		//Building the requestEntryItem
