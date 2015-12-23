@@ -110,7 +110,7 @@ public class EmployeeRequestController {
 >>>>>>> rig_changes*/
 
         //TODO create a message and send to the manager
-        //mail.sendMail(MANAGER_EMAIL, " ");
+        mail.sendMail(MANAGER_EMAIL);
         // mail.sendMail(...
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -120,5 +120,6 @@ public class EmployeeRequestController {
         dynamo.setStatus(id, status);
         //TODO create a message and send to the employee
         // mail.sendMail(...
+        mail.sendMail(EMPLOYEE_EMAIL);
     }
 }
