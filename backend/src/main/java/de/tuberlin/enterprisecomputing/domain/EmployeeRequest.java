@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeRequest {
+
      private String requestId;
      private String name;
      private String timestamp;
@@ -15,4 +16,5 @@ public class EmployeeRequest {
      private String why;
      private String where;
      private int amount;
+
 }

@@ -4,13 +4,22 @@ import de.tuberlin.enterprisecomputing.integrations.S3Service;
 import de.tuberlin.enterprisecomputing.domain.EmployeeRequest;
 import de.tuberlin.enterprisecomputing.integrations.DynamoDBService;
 import de.tuberlin.enterprisecomputing.integrations.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-@RestController
+@Controller
+@Slf4j
 public class EmployeeRequestController {
 
     final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
@@ -39,21 +48,36 @@ public class EmployeeRequestController {
     }
 
     @RequestMapping(path = "/requests", method = RequestMethod.POST)
-    public void createRequest(@RequestParam("name") String name, /*add other values as request/query parameters*/
-                              @RequestParam(value = "file", required = false) MultipartFile file) {
-        final EmployeeRequest request = new EmployeeRequest();
-        //TODO fill the request object with values
+    public ResponseEntity<String> createRequest(@RequestParam("name") String name, @RequestParam("where") String where,
+                                                @RequestParam("why") String why, @RequestParam("when") String when,
+                                                @RequestParam("amount") int amount,
+                                                @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        //fill the request object with values
+        final EmployeeRequest employeeRequest = new EmployeeRequest();
+        employeeRequest.setName(name);
+        employeeRequest.setWhere(where);
+        employeeRequest.setWhy(why);
+        employeeRequest.setWhen(when);
+        employeeRequest.setAmount(amount);
 
+        // store employee request
+        final String requestId = dynamo.createRequestEntry(employeeRequest);
 
-        final String requestId = dynamo.createRequestEntry(request);
-        //TODO store the request in the db and store the binary in s3 bucket
+        // store the request in the db and store the binary in s3 bucket
         // some help: https://spring.io/guides/gs/uploading-files/
-        // s3.storeFile(requestId, ..
-
+        if (!file.isEmpty()) {
+            byte[] bytes = file.getBytes();
+            File localFile = new File(requestId);
+            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(localFile));
+            stream.write(bytes);
+            stream.close();
+            // upload the locally stored file to S3
+            s3.storeFile(localFile.getName(), localFile);
+        }
 
         //TODO create a message and send to the manager
         // mail.sendMail(...
-        return;
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/requests/{id}/status", method = RequestMethod.PUT)
