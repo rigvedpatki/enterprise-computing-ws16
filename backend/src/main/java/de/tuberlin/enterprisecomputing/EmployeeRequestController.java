@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,8 +75,42 @@ public class EmployeeRequestController {
             // upload the locally stored file to S3
             s3.storeFile(localFile.getName(), localFile);
         }
+/*=======
+    @RequestMapping(value = "employeeRequest", path = "/requests", method = RequestMethod.POST)
+    //Receiving JSON data sent by the client --> map it to employeeRequest object 
+    public void createRequest(@RequestBody final EmployeeRequest employeeRequest, 
+                              @RequestParam(value = "file", required = false) MultipartFile file) {
+		
+
+        final String requestId = dynamo.createRequestEntry(employeeRequest);
+        //TODO store the request in the db and store the binary in s3 bucket
+        // some help: https://spring.io/guides/gs/uploading-files/
+        //Storing the file into S3 system
+        if (!file.isEmpty()){
+        	
+        	try {
+				byte[] bytes = file.getBytes();
+				//Converting byte[] to Byte[]
+				
+				Byte[] oByte = new Byte[bytes.length];
+				int i=0;
+				for(byte b : bytes){
+					oByte[i++] = b;
+				}
+				i=0;
+				
+				s3.storeFile(requestId, oByte);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+        }
+
+>>>>>>> rig_changes*/
 
         //TODO create a message and send to the manager
+        //mail.sendMail(MANAGER_EMAIL, " ");
         // mail.sendMail(...
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
