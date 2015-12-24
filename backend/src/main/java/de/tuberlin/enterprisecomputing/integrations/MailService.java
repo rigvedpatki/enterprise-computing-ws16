@@ -3,42 +3,50 @@ package de.tuberlin.enterprisecomputing.integrations;
 import org.springframework.stereotype.Service;
 import com.amazonaws.services.simpleemail.*;
 import com.amazonaws.services.simpleemail.model.*;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.*;
 
 @Service
 public class MailService {
 
     //Declare Email addresses of manager and employee
-    private static final String MANAGER = "ec2015manager@gmail.com";
-    private static final String EMPLOYEE = "ec2015employee@gmail.com";
+    private final String MANAGER = "rigved.patki@gmail.com";
+    private final String EMPLOYEE = "rigved.patki@outlook.com";
 
     //declare client
-    AmazonSimpleEmailServiceClient client = new AmazonSimpleEmailServiceClient();
-
+    private AmazonSimpleEmailServiceClient client ;
+    
     // declare request for manager 
-    SendEmailRequest managerRequest = new SendEmailRequest()
-            .withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
-            .withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
-                    .withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
+    private SendEmailRequest managerRequest ;
 
     // declare request for employee 
-    SendEmailRequest employeeRequest = new SendEmailRequest()
-            .withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
-            .withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
-                    .withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
+    private SendEmailRequest employeeRequest;
 
     public MailService() {
-        // initialize SES client, set region
+        // Initialise SES client, set region
+    	client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
         Region REGION = Region.getRegion(Regions.EU_WEST_1);
         client.setRegion(REGION);
+        
+        managerRequest = new SendEmailRequest()
+        		.withSource(EMPLOYEE)
+                .withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
+                .withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
+                        .withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
+        
+        employeeRequest = new SendEmailRequest()
+        		.withSource(MANAGER)
+                .withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
+                .withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
+                        .withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
     }
 
     public void sendMail(final String to) {
         // send email
-        if (MANAGER.equals(to))
-            client.sendEmail(managerRequest);
-        else
-            client.sendEmail(employeeRequest);
+        if (to.equals(MANAGER))
+            client.sendEmail(this.managerRequest);
+        else if (to.equals(EMPLOYEE))
+            client.sendEmail(this.employeeRequest);
     }
 
     // Returns Email template for the manager

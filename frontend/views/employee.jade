@@ -52,7 +52,7 @@ html
           tbody 
             each reimbursement in reimbursements
               tr
-                td=reimbursement.id
+                td=reimbursement.requestId
                 td=reimbursement.name
                 td=reimbursement.where
                 td=reimbursement.why
@@ -61,5 +61,5 @@ html
                 td=reimbursement.document
                 td=reimbursement.status
                 td
-                  form(action='/employee/' + reimbursement.id, method='get')
+                  form(action='/employee/' + reimbursement.requestId, method='get')
                     input(type="submit", value='Update reimbursement') 

@@ -17,21 +17,25 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 @Controller
 @Slf4j
 public class EmployeeRequestController {
 
-    final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
-    final static String EMPLOYEE_EMAIL = "ec2015employee@gmail.com";
+    final static String MANAGER_EMAIL = "rigved.patki@gmail.com";
+    final static String EMPLOYEE_EMAIL = "rigved.patki@outlook.com";
+    //commented for local testing
+    //final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
+    //final static String EMPLOYEE_EMAIL = "ec2015employee@gmail.com";
 
     @Autowired
-    DynamoDBService dynamo;
+    DynamoDBService dynamo = new DynamoDBService();
     @Autowired
-    MailService mail;
+    MailService mail = new MailService();
     @Autowired
-    S3Service s3;
+    S3Service s3= new S3Service();
 
     @RequestMapping(path = "/requests/{id}", method = RequestMethod.GET)
     public EmployeeRequest getRequest(@PathVariable String id) {
@@ -73,53 +77,19 @@ public class EmployeeRequestController {
             stream.write(bytes);
             stream.close();
             // upload the locally stored file to S3
-            s3.storeFile(localFile.getName(), localFile);
+            s3.storeFile(localFile.getName(), localFile);    
         }
-/*=======
-    @RequestMapping(value = "employeeRequest", path = "/requests", method = RequestMethod.POST)
-    //Receiving JSON data sent by the client --> map it to employeeRequest object 
-    public void createRequest(@RequestBody final EmployeeRequest employeeRequest, 
-                              @RequestParam(value = "file", required = false) MultipartFile file) {
-		
+        
 
-        final String requestId = dynamo.createRequestEntry(employeeRequest);
-        //TODO store the request in the db and store the binary in s3 bucket
-        // some help: https://spring.io/guides/gs/uploading-files/
-        //Storing the file into S3 system
-        if (!file.isEmpty()){
-        	
-        	try {
-				byte[] bytes = file.getBytes();
-				//Converting byte[] to Byte[]
-				
-				Byte[] oByte = new Byte[bytes.length];
-				int i=0;
-				for(byte b : bytes){
-					oByte[i++] = b;
-				}
-				i=0;
-				
-				s3.storeFile(requestId, oByte);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        	
-        }
-
->>>>>>> rig_changes*/
-
-        //TODO create a message and send to the manager
+        //create a message and send to the manager
         mail.sendMail(MANAGER_EMAIL);
-        // mail.sendMail(...
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/requests/{id}/status", method = RequestMethod.PUT)
     public void putStatus(@PathVariable String id, @RequestParam("status") String status) {
         dynamo.setStatus(id, status);
-        //TODO create a message and send to the employee
-        // mail.sendMail(...
+        //create a message and send to the employee
         mail.sendMail(EMPLOYEE_EMAIL);
     }
 }

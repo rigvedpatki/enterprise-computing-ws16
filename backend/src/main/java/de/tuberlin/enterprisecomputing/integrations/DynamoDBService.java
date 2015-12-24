@@ -20,7 +20,9 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +40,7 @@ public class DynamoDBService {
     public DynamoDBService() {
         //initialise DynamoDB client
     	//Creating a DynamoDB client object
-    	dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider());
+    	dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
     	//Using EU_WEST_1 region for DynamoDB client
     	dynamoDBClient.setRegion(Region.getRegion(Regions.EU_WEST_1));
     	// Creating instance of DynamoDB
@@ -52,6 +54,15 @@ public class DynamoDBService {
     	//Generating Random UUID as requestId
     	String uniqueRequestId = UUID.randomUUID().toString();
     	request.setRequestId(uniqueRequestId);
+    	//Generating the current timestamp
+    	Long currentTimeStamp = new Date().getTime();
+    	request.setTimestamp(currentTimeStamp.toString());
+        //generating a URL to the document
+    	S3Service s3 =new S3Service();
+        String docLink= s3.generateURL(request.getRequestId());
+        request.setDocument(docLink);
+        //Setting the status of document
+        request.setStatus("Unchecked");
     	try
     	{
     		//Building the requestEntryItem
@@ -62,7 +73,10 @@ public class DynamoDBService {
     				.withString("when", request.getWhen())
     				.withString("why", request.getWhy())
     				.withString("where", request.getWhere())
-    				.withInt("amount", request.getAmount());
+    				.withInt("amount", request.getAmount())
+    				.withString("document",request.getDocument())
+    				.withString("status", request.getStatus());
+    		
     		
     		//writing the Item into the table
     		PutItemOutcome requestEntryOutcome = employeeRequestTable.putItem(requestEntryItem);
@@ -78,36 +92,43 @@ public class DynamoDBService {
     	//Creating an ArrayList of EmployeeRequests to be returned
     	ArrayList<EmployeeRequest> allRequests = new ArrayList<EmployeeRequest>();
     	//Creating a temporary instance of EmployeeRequest
-    	EmployeeRequest temp = new EmployeeRequest();
-    	
-    	Map<String, AttributeValue> lastKeyEvaluated = null;
+    	EmployeeRequest temp = null ;
+    	//COmplete result after scanning
+    	ScanResult result = null;
     	//A single scan can not return data more than 1 MB, hence using loop
+    	
     	do{
+    		ScanRequest req = new ScanRequest().withTableName(tableName);
     		//New ScanRequest on the table employee_reimbursements with a limit of 10 entries
-    		ScanRequest req = new ScanRequest()
-    				.withTableName(tableName)
-    				.withLimit(10)
-    				.withExclusiveStartKey(lastKeyEvaluated);
-    		//collecting the result of the scan
-    		ScanResult result = dynamoDBClient.scan(req);
-    		//Adding the scanned result into the ArrayList of EmployeeRequests
-    	    for (Map<String, AttributeValue> item : result.getItems()){
-    	    	
-    	    	temp.setRequestId(item.get("requestId").toString());
-    	    	temp.setName(item.get("name").toString());
-    	    	temp.setTimestamp(item.get("timestamp").toString());
-    	    	temp.setWhen(item.get("when").toString());
-    	    	temp.setWhy(item.get("why").toString());
-    	    	temp.setWhere(item.get("where").toString());
-    	    	temp.setAmount(Integer.parseInt(item.get("amount").toString()));
-    	    	
+    		if(result != null){
+    			req.setExclusiveStartKey(result.getLastEvaluatedKey());
+    		}
+    		//collecting the result of the scan into a List of rows
+    		 result = dynamoDBClient.scan(req);
+    		System.out.println(result.toString());
+    		List<Map<String,AttributeValue>> rows = result.getItems();
+    		
+    		//Adding the scanned result from rows into the ArrayList of EmployeeRequests
+    	    for (Map<String, AttributeValue> item : rows){
+    	    	System.out.println(item.toString());
+    	    	temp = new EmployeeRequest();
+    	    	temp.setRequestId(item.get("requestId").getS());
+    	    	temp.setName(item.get("name").getS());
+    	    	temp.setTimestamp(item.get("timestamp").getS());
+    	    	temp.setWhen(item.get("when").getS());
+    	    	temp.setWhy(item.get("why").getS());
+    	    	temp.setWhere(item.get("where").getS());
+    	    	temp.setAmount(Integer.parseInt(item.get("amount").getN()));
+    	    	temp.setDocument(item.get("document").getS());
+    	    	temp.setStatus(item.get("status").getS());
+    	    	System.out.println(temp.getRequestId());
     	    	allRequests.add(temp);
-    	    	//Clearing the temporary employeeRequest
-    	    	temp = null;
     	    }
     	
-    	}while(lastKeyEvaluated != null);
-    		
+    	}while(result.getLastEvaluatedKey() != null);
+    	
+    	System.out.print(allRequests.toString());	
+    	
         return allRequests;
     }
 
@@ -118,7 +139,19 @@ public class DynamoDBService {
     	// Getting the requestEntry for requestId = id
     	Item requestEntryItem = employeeRequestTable.getItem("requestId", id);
     	// Creating an EmployeeRequest instance to be returned 
-    	EmployeeRequest request =new EmployeeRequest(requestEntryItem.getString("requestId"),requestEntryItem.getString("name"),requestEntryItem.getString("timestamp"),requestEntryItem.getString("when"),requestEntryItem.getString("why"),requestEntryItem.getString("where"),requestEntryItem.getInt("amount"));
+    	EmployeeRequest request =new EmployeeRequest();
+    	//Filling up the instance with data 
+    	request.setRequestId(requestEntryItem.getString("requestId"));
+    	request.setName(requestEntryItem.getString("name"));
+    	request.setTimestamp(requestEntryItem.getString("timestamp"));
+    	request.setWhen(requestEntryItem.getString("when"));
+    	request.setWhere(requestEntryItem.getString("where"));
+    	request.setWhy(requestEntryItem.getString("why"));
+    	request.setAmount(requestEntryItem.getInt("amount"));
+    	request.setDocument(requestEntryItem.getString("document"));
+    	request.setStatus(requestEntryItem.getString("status"));
+    	
+    	
     	
         return request;
     }
@@ -146,15 +179,14 @@ public class DynamoDBService {
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
     	//Updating the requestStatus as status for requestId = id 
-    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("requestStatus").put(status));
+    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("status").put(status));
     	
     }
     
-/*    private EmployeeRequest addToArrayList(Map<String, AttributeValue> item)
-    {
-    	
-    	return null;
-    }*/
-
-    
+    public void setDocLink(final String id, final String docLink){
+    	//Selecting the table from DynamoDB
+    	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	//Updating the requestStatus as status for requestId = id 
+    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("document").put(docLink));
+    }   
 }
