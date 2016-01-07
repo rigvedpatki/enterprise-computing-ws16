@@ -1,6 +1,7 @@
 package de.tuberlin.enterprisecomputing.domain;
 
-import java.net.URL;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class EmployeeRequest {
      private int amount;
      //added URL link to the document stored to be displayed in the front end jade table.
      private String document;
+     //status of the request
      private String status;
 
 }

@@ -1,26 +1,28 @@
 package de.tuberlin.enterprisecomputing.integrations;
 
-import de.tuberlin.enterprisecomputing.domain.EmployeeRequest;
+
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+//import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.TableKeysAndAttributes;
-import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
+
+//import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 
-import java.net.URL;
+import de.tuberlin.enterprisecomputing.domain.EmployeeRequest;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,16 +33,17 @@ import java.util.UUID;
 public class DynamoDBService {
 
 	//DynamoDB table name = employee_reimbursements
-	private String tableName = "employee_reimbursements";
+	private static String tableName = "employee_reimbursements";
 	//DynamoDB Client
-	private AmazonDynamoDBClient dynamoDBClient;
-	private DynamoDB dynamoDB;
-	Table employeeRequestTable;
+	private static AmazonDynamoDBClient dynamoDBClient;
+	private static DynamoDB dynamoDB;
+	
 	
     public DynamoDBService() {
         //initialise DynamoDB client
     	//Creating a DynamoDB client object
-    	dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	//dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider().getCredentials());
     	//Using EU_WEST_1 region for DynamoDB client
     	dynamoDBClient.setRegion(Region.getRegion(Regions.EU_WEST_1));
     	// Creating instance of DynamoDB
@@ -51,6 +54,7 @@ public class DynamoDBService {
         
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	System.out.println("Table create request entry: "+employeeRequestTable.toString());
     	//Generating Random UUID as requestId
     	String uniqueRequestId = UUID.randomUUID().toString();
     	request.setRequestId(uniqueRequestId);
@@ -79,7 +83,8 @@ public class DynamoDBService {
     		
     		
     		//writing the Item into the table
-    		PutItemOutcome requestEntryOutcome = employeeRequestTable.putItem(requestEntryItem);
+    		//PutItemOutcome requestEntryOutcome = employeeRequestTable.putItem(requestEntryItem);
+    		employeeRequestTable.putItem(requestEntryItem);
     	}
     	catch(Exception e){
     		e.printStackTrace();
@@ -105,12 +110,12 @@ public class DynamoDBService {
     		}
     		//collecting the result of the scan into a List of rows
     		 result = dynamoDBClient.scan(req);
-    		System.out.println(result.toString());
+    		//System.out.println(result.toString());
     		List<Map<String,AttributeValue>> rows = result.getItems();
     		
     		//Adding the scanned result from rows into the ArrayList of EmployeeRequests
     	    for (Map<String, AttributeValue> item : rows){
-    	    	System.out.println(item.toString());
+    	    	//System.out.println(item.toString());
     	    	temp = new EmployeeRequest();
     	    	temp.setRequestId(item.get("requestId").getS());
     	    	temp.setName(item.get("name").getS());
@@ -121,13 +126,13 @@ public class DynamoDBService {
     	    	temp.setAmount(Integer.parseInt(item.get("amount").getN()));
     	    	temp.setDocument(item.get("document").getS());
     	    	temp.setStatus(item.get("status").getS());
-    	    	System.out.println(temp.getRequestId());
+    	    	//System.out.println(temp.getRequestId());
     	    	allRequests.add(temp);
     	    }
     	
     	}while(result.getLastEvaluatedKey() != null);
     	
-    	System.out.print(allRequests.toString());	
+    	//System.out.println(allRequests.toString());	
     	
         return allRequests;
     }
@@ -136,8 +141,11 @@ public class DynamoDBService {
         
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	System.out.println("Dynamodb table: " +dynamoDB.getTable("employee_reimbursements").toString());
+    	System.out.println("Table get request by id: "+employeeRequestTable.toString());
     	// Getting the requestEntry for requestId = id
     	Item requestEntryItem = employeeRequestTable.getItem("requestId", id);
+    	System.out.println(requestEntryItem.toString());
     	// Creating an EmployeeRequest instance to be returned 
     	EmployeeRequest request =new EmployeeRequest();
     	//Filling up the instance with data 
@@ -159,6 +167,7 @@ public class DynamoDBService {
     public void updateRequest(final String id, final EmployeeRequest request) {
         
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	System.out.println("Table updateRequest: "+employeeRequestTable.toString());
     	//Creating UpdateItemSpec for the updates to be made
     	UpdateItemSpec requestEntryUpdate = new UpdateItemSpec()
     			.withPrimaryKey("requestID", id)
@@ -171,22 +180,26 @@ public class DynamoDBService {
     					.withInt("amount", request.getAmount())
     					);
     	//Updating the employeeRequestTable
-    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
+    	//UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
+    	employeeRequestTable.updateItem(requestEntryUpdate);
     }
 
     public void setStatus(final String id, final String status) {
         
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	System.out.println("Table setStatus: "+employeeRequestTable.toString());
     	//Updating the requestStatus as status for requestId = id 
-    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("status").put(status));
+    	//UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("status").put(status));
+    	employeeRequestTable.updateItem( id, new AttributeUpdate("status").put(status));
     	
     }
     
     public void setDocLink(final String id, final String docLink){
     	//Selecting the table from DynamoDB
     	Table employeeRequestTable = dynamoDB.getTable(tableName);
+    	System.out.println("Table set doclink: "+employeeRequestTable.toString());
     	//Updating the requestStatus as status for requestId = id 
-    	UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem( id, new AttributeUpdate("document").put(docLink));
+    	/*UpdateItemOutcome employeeRequestOutcome =*/ employeeRequestTable.updateItem( id, new AttributeUpdate("document").put(docLink));
     }   
 }
