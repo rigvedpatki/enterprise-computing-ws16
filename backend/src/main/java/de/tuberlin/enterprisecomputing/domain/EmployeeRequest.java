@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmployeeRequest {
 
-     private String requestId;
-     private String name;
-     private String timestamp;
-     private String when;
-     private String why;
-     private String where;
-     private int amount;
-     //added URL link to the document stored to be displayed in the front end jade table.
-     private String document;
-     //status of the request
-     private String status;
+    private String requestId;
+    private String name;
+    private String timestamp;
+    private String when;
+    private String why;
+    private String where;
+    private int amount;
+    //added URL link to the document stored to be displayed in the front end jade table.
+    private String document;
+    //status of the request
+    private String status;
 
 }

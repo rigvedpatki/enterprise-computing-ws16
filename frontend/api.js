@@ -2,9 +2,9 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 
-var ENDPOINT_URL = 'default-environment-rm33xnm3sk.elasticbeanstalk.com';
+//var ENDPOINT_URL = 'default-environment-rm33xnm3sk.elasticbeanstalk.com';
 //var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
-//var ENDPOINT_URL = 'localhost';
+var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
 var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL + ':8080';
@@ -20,7 +20,7 @@ exports.getRequest = function (requestId, callback) {
 };
 
 exports.getRequests = function (callback) {
-    request(BASE_URL + '/requests/', function (err, response, body) {
+    request(BASE_URL + '/requests', function (err, response, body) {
         if (!body) {
             callback('not requests')
         } else {
@@ -30,11 +30,12 @@ exports.getRequests = function (callback) {
 };
 
 exports.createRequest = function (requestValues, file, callback) {
-    requestValues.fileName = file.originalname;
-    requestValues.file = fs.createReadStream(file.path);
-
+    if (file) {
+        requestValues.fileName = file.originalname;
+        requestValues.file = fs.createReadStream(file.path);
+    }
     request.post({
-        url: BASE_URL + '/requests',
+        url: BASE_URL + '/requests/',
         formData: requestValues,
         headers: {
             'enctype': 'multipart/form-data'

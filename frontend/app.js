@@ -35,7 +35,6 @@ app.listen(appEnv.port, '0.0.0.0', function () {
 app.get('/employee', function (req, res) {
     if (employeeAuth(req)) {
         api.getRequests(function (err, requests) {
-			console.log("Requests: %j",requests);
             if (err) {
                 res.statusCode = 500;
                 res.send(err);
@@ -54,9 +53,7 @@ app.get('/employee', function (req, res) {
 app.get('/employee/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
-        // TODO
         api.getRequest(requestId, function (err, request) {
-			console.log("Request: %j",request);
             if (err) {
                 res.statusCode = 500;
                 res.send(err);

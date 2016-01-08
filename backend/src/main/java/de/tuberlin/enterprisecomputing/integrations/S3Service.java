@@ -28,28 +28,29 @@ public class S3Service {
     private final String S3_BUCKET = "reimbursement-docs1";
     //private final String S3_BUCKET = "reimbursement-docs";
     private static AmazonS3 s3client;
-    
-    public S3Service(){
-    	//s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-    	s3client = new AmazonS3Client(new ProfileCredentialsProvider().getCredentials());
-    	s3client.setRegion(Region.getRegion(Regions.EU_WEST_1));
+
+    public S3Service() {
+        s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+        //s3client = new AmazonS3Client(new ProfileCredentialsProvider().getCredentials());
+        s3client.setRegion(Region.getRegion(Regions.EU_WEST_1));
     }
-    
+
 
     public void storeFile(final String fileName, final File file) {
         s3client.putObject(new PutObjectRequest(S3_BUCKET, fileName, file));
     }
 
-    public String generateURL(final String fileName){
-    	GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(S3_BUCKET, fileName);
-    	urlRequest.setMethod(HttpMethod.GET);
-    	Calendar calendar = new GregorianCalendar();
-    	calendar.add(Calendar.MONTH, 1);
-    	Date nextMonth = calendar.getTime();
-    	urlRequest.setExpiration(nextMonth);
-    	URL s = s3client.generatePresignedUrl(urlRequest);
-    	return s.toString() ;
+    public String generateURL(final String fileName) {
+        GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(S3_BUCKET, fileName);
+        urlRequest.setMethod(HttpMethod.GET);
+        Calendar calendar = new GregorianCalendar();
+        calendar.add(Calendar.MONTH, 1);
+        Date nextMonth = calendar.getTime();
+        urlRequest.setExpiration(nextMonth);
+        URL s = s3client.generatePresignedUrl(urlRequest);
+        return s.toString();
     }
+
     public byte[] getFile(final String fileName) throws IOException {
         // get s3Object
         S3Object object = s3client.getObject(new GetObjectRequest(S3_BUCKET, fileName));

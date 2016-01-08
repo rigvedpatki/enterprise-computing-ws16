@@ -13,32 +13,32 @@ public class MailService {
     private final String MANAGER = "rigved.patki@gmail.com";
     private final String EMPLOYEE = "rigved.patki@outlook.com";
     //commented for local testing
-   // private final String MANAGER = "ec2015manager@gmail.com";
-   // private final String EMPLOYEE = "ec2015employee@gmail.com";
+    // private final String MANAGER = "ec2015manager@gmail.com";
+    // private final String EMPLOYEE = "ec2015employee@gmail.com";
     //declare client
-    private static AmazonSimpleEmailServiceClient client ;
-    
+    private static AmazonSimpleEmailServiceClient client;
+
     // declare request for manager 
-    private static SendEmailRequest managerRequest ;
+    private static SendEmailRequest managerRequest;
 
     // declare request for employee 
     private static SendEmailRequest employeeRequest;
 
     public MailService() {
         // Initialise SES client, set region
-    	//client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-    	client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider().getCredentials());
+        client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+        //client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider().getCredentials());
         Region REGION = Region.getRegion(Regions.EU_WEST_1);
         client.setRegion(REGION);
-        
+
         managerRequest = new SendEmailRequest()
-        		.withSource(EMPLOYEE)
+                .withSource(EMPLOYEE)
                 .withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
                 .withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
                         .withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
-        
+
         employeeRequest = new SendEmailRequest()
-        		.withSource(MANAGER)
+                .withSource(MANAGER)
                 .withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
                 .withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
                         .withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
