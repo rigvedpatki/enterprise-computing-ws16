@@ -33,10 +33,10 @@ import java.util.UUID;
 public class DynamoDBService {
 
     //DynamoDB table name = employee_reimbursements
-    private static String tableName = "employee_reimbursements";
+    private String tableName = "employee_reimbursements";
     //DynamoDB Client
-    private static AmazonDynamoDBClient dynamoDBClient;
-    private static DynamoDB dynamoDB;
+    private AmazonDynamoDBClient dynamoDBClient;
+    private DynamoDB dynamoDB;
 
 
     public DynamoDBService() {

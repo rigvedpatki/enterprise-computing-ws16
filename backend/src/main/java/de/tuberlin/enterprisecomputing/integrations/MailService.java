@@ -16,13 +16,8 @@ public class MailService {
     // private final String MANAGER = "ec2015manager@gmail.com";
     // private final String EMPLOYEE = "ec2015employee@gmail.com";
     //declare client
-    private static AmazonSimpleEmailServiceClient client;
+    private AmazonSimpleEmailServiceClient client;
 
-    // declare request for manager 
-    private static SendEmailRequest managerRequest;
-
-    // declare request for employee 
-    private static SendEmailRequest employeeRequest;
 
     public MailService() {
         // Initialise SES client, set region
@@ -31,25 +26,33 @@ public class MailService {
         Region REGION = Region.getRegion(Regions.EU_WEST_1);
         client.setRegion(REGION);
 
-        managerRequest = new SendEmailRequest()
-                .withSource(EMPLOYEE)
-                .withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
-                .withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
-                        .withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
 
-        employeeRequest = new SendEmailRequest()
-                .withSource(MANAGER)
-                .withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
-                .withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
-                        .withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
+
+       
     }
 
     public void sendMail(final String to) {
         // send email
-        if (to.equals(MANAGER))
-            client.sendEmail(MailService.managerRequest);
-        else if (to.equals(EMPLOYEE))
-            client.sendEmail(MailService.employeeRequest);
+        if (to.equals(MANAGER)){
+        	
+            SendEmailRequest managerRequest = new SendEmailRequest()
+                    .withSource(EMPLOYEE)
+                    .withDestination(new Destination().withToAddresses(new String[]{MANAGER}))
+                    .withMessage(new Message().withSubject(new Content().withData(this.managerEmail()[0]))
+                            .withBody(new Body().withText(new Content().withData(this.managerEmail()[1]))));
+            
+            client.sendEmail(managerRequest);
+        }
+        else if (to.equals(EMPLOYEE)){
+        	
+        	 SendEmailRequest employeeRequest = new SendEmailRequest()
+                     .withSource(MANAGER)
+                     .withDestination(new Destination().withToAddresses(new String[]{EMPLOYEE}))
+                     .withMessage(new Message().withSubject(new Content().withData(this.employeeEmail()[0]))
+                             .withBody(new Body().withText(new Content().withData(this.employeeEmail()[1]))));
+        	 
+            client.sendEmail(employeeRequest);
+        }
     }
 
     // Returns Email template for the manager

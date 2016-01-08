@@ -27,7 +27,7 @@ public class S3Service {
 
     private final String S3_BUCKET = "reimbursement-docs1";
     //private final String S3_BUCKET = "reimbursement-docs";
-    private static AmazonS3 s3client;
+    private AmazonS3 s3client;
 
     public S3Service() {
         s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
