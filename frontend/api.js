@@ -2,8 +2,9 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 
+var ENDPOINT_URL = 'default-environment-rm33xnm3sk.elasticbeanstalk.com';
 //var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
-var ENDPOINT_URL = 'localhost';
+//var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
 var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL + ':8080';
@@ -39,7 +40,7 @@ exports.createRequest = function (requestValues, file, callback) {
             'enctype': 'multipart/form-data'
         }
     }, function optionalCallback(err, httpResponse, body) {
-        console.log("err: %j, httoResonse: %j, body: %j", err, httpResponse, body);
+        //console.log("err: %j, httpResonse: %j, body: %j", err, httpResponse, body);
         if (err) {
             callback(err)
         } else {

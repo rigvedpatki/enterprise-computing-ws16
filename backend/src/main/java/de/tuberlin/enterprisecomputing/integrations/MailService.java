@@ -12,19 +12,22 @@ public class MailService {
     //Declare Email addresses of manager and employee
     private final String MANAGER = "rigved.patki@gmail.com";
     private final String EMPLOYEE = "rigved.patki@outlook.com";
-
+    //commented for local testing
+   // private final String MANAGER = "ec2015manager@gmail.com";
+   // private final String EMPLOYEE = "ec2015employee@gmail.com";
     //declare client
-    private AmazonSimpleEmailServiceClient client ;
+    private static AmazonSimpleEmailServiceClient client ;
     
     // declare request for manager 
-    private SendEmailRequest managerRequest ;
+    private static SendEmailRequest managerRequest ;
 
     // declare request for employee 
-    private SendEmailRequest employeeRequest;
+    private static SendEmailRequest employeeRequest;
 
     public MailService() {
         // Initialise SES client, set region
-    	client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	//client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider().getCredentials());
         Region REGION = Region.getRegion(Regions.EU_WEST_1);
         client.setRegion(REGION);
         
@@ -44,9 +47,9 @@ public class MailService {
     public void sendMail(final String to) {
         // send email
         if (to.equals(MANAGER))
-            client.sendEmail(this.managerRequest);
+            client.sendEmail(MailService.managerRequest);
         else if (to.equals(EMPLOYEE))
-            client.sendEmail(this.employeeRequest);
+            client.sendEmail(MailService.employeeRequest);
     }
 
     // Returns Email template for the manager

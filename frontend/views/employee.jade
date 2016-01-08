@@ -23,7 +23,7 @@ html
         p Amount: 
           input(name='amount',type='number')
         p Document: 
-          input(name='document',type='file', size='50')
+          input(name='document',type='file', size='50', accept='application/pdf,.docx,.doc,.zip')
         p  
           input(name='submit', type='submit', value='Submit reimbursement')
   div
@@ -31,8 +31,6 @@ html
       table(style='width:100%') 
         thead
           tr
-            th
-              | Reimbursement-ID
             th
               | Name
             th

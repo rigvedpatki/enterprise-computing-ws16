@@ -25,11 +25,13 @@ import com.amazonaws.util.*;
 @Service
 public class S3Service {
 
-    private final String S3_BUCKET = "reimbursement-docs";
-    private AmazonS3 s3client;
+    private final String S3_BUCKET = "reimbursement-docs1";
+    //private final String S3_BUCKET = "reimbursement-docs";
+    private static AmazonS3 s3client;
     
     public S3Service(){
-    	s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	//s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+    	s3client = new AmazonS3Client(new ProfileCredentialsProvider().getCredentials());
     	s3client.setRegion(Region.getRegion(Regions.EU_WEST_1));
     }
     
@@ -45,7 +47,6 @@ public class S3Service {
     	calendar.add(Calendar.MONTH, 1);
     	Date nextMonth = calendar.getTime();
     	urlRequest.setExpiration(nextMonth);
-    	
     	URL s = s3client.generatePresignedUrl(urlRequest);
     	return s.toString() ;
     }
