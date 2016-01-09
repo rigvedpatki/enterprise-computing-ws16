@@ -39,7 +39,7 @@ html
               td=reimbursement.why
               td=reimbursement.when
               td=reimbursement.amount
-              td=reimbursement.document
+              td: a( href=''+reimbursement.document): img(src='/images/file.png' alt='file')
               td=reimbursement.status
               td
                 form(action='/manager/requests/' + reimbursement.id + '/status', method='post')
