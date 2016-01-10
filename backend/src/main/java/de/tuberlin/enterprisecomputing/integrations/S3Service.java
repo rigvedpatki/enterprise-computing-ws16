@@ -25,8 +25,7 @@ import com.amazonaws.util.*;
 @Service
 public class S3Service {
 
-    private final String S3_BUCKET = "reimbursement-docs1";
-    //private final String S3_BUCKET = "reimbursement-docs";
+    private final String S3_BUCKET = "reimbursement-docs";
     private AmazonS3 s3client;
 
     public S3Service() {
