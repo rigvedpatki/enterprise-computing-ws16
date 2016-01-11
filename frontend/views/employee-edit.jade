@@ -6,9 +6,9 @@ html
     div
     fieldset
       legend Update reimbursement
-      form(action='/employee/requests/'+ reimbursement.id,method='post')
+      form(action='/employee/requests/'+ reimbursement.requestId,method='post')
         p Reimbursement-ID: 
-          input(name='name',type='text',value=reimbursement.requestId,readonly="readonly")
+          input(name='requestId',type='text',value=reimbursement.requestId,readonly="readonly")
         p Name: 
           input(name='name',type='text',value=reimbursement.name,readonly="readonly")
         p Where: 
