@@ -23,8 +23,10 @@ import java.util.List;
 @Slf4j
 public class EmployeeRequestController {
 
-    final static String MANAGER_EMAIL = "maxim.tschumak@gmail.com";
-    final static String EMPLOYEE_EMAIL = "maxim.tschumak@gmail.com";
+	final static String MANAGER_EMAIL = "rigved.patki@gmail.com";
+    final static String EMPLOYEE_EMAIL = "rigved.patki@outlook.com";
+    //final static String MANAGER_EMAIL = "maxim.tschumak@gmail.com";
+    //final static String EMPLOYEE_EMAIL = "maxim.tschumak@gmail.com";
     //commented for local testing
     //final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
     //final static String EMPLOYEE_EMAIL = "ec2015employee@gmail.com";
@@ -91,7 +93,7 @@ public class EmployeeRequestController {
     }
 
     @RequestMapping(path = "/requests/{id}/status", method = RequestMethod.PUT)
-    public ResponseEntity<String> putStatus(@PathVariable String id, @RequestParam("status") String status) {
+    public ResponseEntity<String> setStatus(@PathVariable String id, @RequestParam("status") String status) {
         dynamo.setStatus(id, status);
         //create a message and send to the employee
         mail.sendMail(EMPLOYEE_EMAIL);
