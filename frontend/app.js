@@ -117,12 +117,14 @@ app.post('/employee/requests/:id', function (req, res) {
     if (employeeAuth(req)) {
         var requestId = req.params['id'];
         var requestValues = {
+			requestId: req.body['requestId'],
             name: req.body['name'],
             where: req.body['where'],
             why: req.body['why'],
             when: req.body['when'],
             amount: req.body['amount']
         };
+		console.log("request id : %s \n request values: %j in app",requestId, requestValues );
         api.updateRequest(requestId, requestValues, function(err){
             if (err) {
                 res.statusCode = 500;

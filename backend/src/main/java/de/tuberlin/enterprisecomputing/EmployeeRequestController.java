@@ -45,8 +45,9 @@ public class EmployeeRequestController {
         return dynamo.getRequestById(id);
     }
 
-    @RequestMapping(path = "/requests/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/requests/{id}", method = RequestMethod.POST)
     public void updateRequest(@PathVariable String id, @RequestBody EmployeeRequest request) {
+    	System.out.println(request.toString());
         dynamo.updateRequest(id, request);
     }
 

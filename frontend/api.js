@@ -51,16 +51,18 @@ exports.createRequest = function (requestValues, file, callback) {
 };
 
 exports.updateRequest = function (requestId, requestValues, callback) {
-    request.put({
+    request.post({
         url: BASE_URL + '/requests/' + requestId,
-        formData: requestValues
+        formData: requestValues	
     }, function optionalCallback(err, httpResponse, body) {
+		console.log("err: %j, httpResonse: %j, body: %j", err, httpResponse, body);
         if (err) {
             callback(err)
         } else {
             callback(null)
         }
     });
+	console.log("request values in api : %j", requestValues );
 };
 
 exports.setStatus = function (requestId, newStatus, callback) {

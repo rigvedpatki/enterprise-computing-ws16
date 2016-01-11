@@ -6,15 +6,14 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.document.AttributeUpdate;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
-//import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 
-//import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
+import com.amazonaws.services.dynamodbv2.document.UpdateItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -180,9 +179,11 @@ public class DynamoDBService {
                         .withString("where", request.getWhere())
                         .withInt("amount", request.getAmount())
                 );
+        System.out.println("Updated request: "+ requestEntryUpdate.toString());
         //Updating the employeeRequestTable
-        //UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
-        employeeRequestTable.updateItem(requestEntryUpdate);
+        UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
+        System.out.println("Outcome: "+ employeeRequestOutcome.toString());
+        //employeeRequestTable.updateItem(requestEntryUpdate);
     }
 
     public void setStatus(final String id, final String status) {
