@@ -8,7 +8,7 @@ html
       legend Update reimbursement
       form(action='/employee/requests/'+ reimbursement.id,method='post')
         p Reimbursement-ID: 
-          input(name='name',type='text',value=reimbursement.id,readonly="readonly")
+          input(name='name',type='text',value=reimbursement.requestId,readonly="readonly")
         p Name: 
           input(name='name',type='text',value=reimbursement.name,readonly="readonly")
         p Where: 
