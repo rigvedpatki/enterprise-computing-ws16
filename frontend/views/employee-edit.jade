@@ -19,7 +19,9 @@ html
           input(name='when',type='date',value=reimbursement.when)
         p Amount: 
           input(name='amount',type='number',value=reimbursement.amount)
-        p Document: 
+        p Old Document:
+          a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file')
+        p Add new document: 
           input(name='document',type='file',size='50', accept='application/pdf,.docx,.doc,.zip')
         p  
           input(type="submit", value='Update reimbursement')
