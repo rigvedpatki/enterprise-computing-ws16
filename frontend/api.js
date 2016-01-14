@@ -2,9 +2,8 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 
-//var ENDPOINT_URL = 'default-environment-rm33xnm3sk.elasticbeanstalk.com';
-//var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
-var ENDPOINT_URL = 'localhost';
+var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
+// var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
 var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL + ':8080';
@@ -40,8 +39,7 @@ exports.createRequest = function (requestValues, file, callback) {
         headers: {
             'enctype': 'multipart/form-data'
         }
-    }, function optionalCallback(err, httpResponse, body) {
-        //console.log("err: %j, httpResonse: %j, body: %j", err, httpResponse, body);
+    }, function optionalCallback(err) {
         if (err) {
             callback(err)
         } else {
@@ -51,33 +49,31 @@ exports.createRequest = function (requestValues, file, callback) {
 };
 
 exports.updateRequest = function (requestValues, file, callback) {
-	if (file) {
+    if (file) {
         requestValues.fileName = file.originalname;
         requestValues.file = fs.createReadStream(file.path);
     }
-	console.log("request values in api : %j", requestValues );
-    request.post({
+    request.put({
         url: BASE_URL + '/requests/' + requestValues.requestId,
-        formData: requestValues	,
-		headers: {
+        formData: requestValues,
+        headers: {
             'enctype': 'multipart/form-data'
         }
-    }, function optionalCallback(err, httpResponse, body) {
-		console.log("err: %j, httpResonse: %j, body: %j", err, httpResponse, body);
+    }, function optionalCallback(err) {
         if (err) {
             callback(err)
         } else {
             callback(null)
         }
     });
-	
+
 };
 
 exports.setStatus = function (requestId, newStatus, callback) {
     request.post({
         url: BASE_URL + '/requests/' + requestId + '/status',
-        qs: {status: newStatus }
-    }, function optionalCallback(err, httpResponse, body) {
+        qs: {status: newStatus}
+    }, function optionalCallback(err) {
         if (err) {
             callback(err)
         } else {

@@ -1,6 +1,7 @@
 package de.tuberlin.enterprisecomputing.integrations;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
@@ -27,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class DynamoDBService {
 
-    //DynamoDB table name = employee_reimbursements
     private String tableName = "employee_reimbursements";
     //DynamoDB Client
     private AmazonDynamoDBClient dynamoDBClient;
@@ -39,8 +40,8 @@ public class DynamoDBService {
     public DynamoDBService() {
         //initialise DynamoDB client
         //Creating a DynamoDB client object
-        dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-        //dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider().getCredentials());
+        // dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+        dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider().getCredentials());
         //Using EU_WEST_1 region for DynamoDB client
         dynamoDBClient.setRegion(Region.getRegion(Regions.EU_WEST_1));
         // Creating instance of DynamoDB
@@ -66,22 +67,21 @@ public class DynamoDBService {
                     .withString("documentName", request.getDocumentName())
                     .withString("status", request.getStatus());
 
-
+            log.debug(requestEntryItem.toJSON());
             //writing the Item into the table
             //PutItemOutcome requestEntryOutcome = employeeRequestTable.putItem(requestEntryItem);
             employeeRequestTable.putItem(requestEntryItem);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("could not store the request", e);
         }
         return request.getRequestId();
     }
 
     public ArrayList<EmployeeRequest> getAllRequests() {
-        //TODO
         //Creating an ArrayList of EmployeeRequests to be returned
-        ArrayList<EmployeeRequest> allRequests = new ArrayList<EmployeeRequest>();
+        ArrayList<EmployeeRequest> allRequests = new ArrayList<>();
         //Creating a temporary instance of EmployeeRequest
-        EmployeeRequest temp = null;
+        EmployeeRequest temp;
         //COmplete result after scanning
         ScanResult result = null;
         //A single scan can not return data more than 1 MB, hence using loop
@@ -154,18 +154,18 @@ public class DynamoDBService {
         Table employeeRequestTable = dynamoDB.getTable(tableName);
         //System.out.println("Table updateRequest: " + employeeRequestTable.toString());
         //Creating UpdateItemSpec for the updates to be made
-        
+
         UpdateItemSpec requestEntryUpdate = new UpdateItemSpec()
                 .withPrimaryKey("requestId", id)
                 .withUpdateExpression("set #time=:val1, #when=:val2, #why=:val3, #where=:val4, #amount=:val5")
                 .withNameMap(new NameMap()
-                		.with("#time","timestamp")
-                		.with("#when","when")
-                		.with("#why","why")
-                		.with("#where","where")
-                		.with("#amount","amount"))
+                        .with("#time", "timestamp")
+                        .with("#when", "when")
+                        .with("#why", "why")
+                        .with("#where", "where")
+                        .with("#amount", "amount"))
                 .withValueMap(new ValueMap()
-                        .withString(":val1",request.getTimestamp())
+                        .withString(":val1", request.getTimestamp())
                         .withString(":val2", request.getWhen())
                         .withString(":val3", request.getWhy())
                         .withString(":val4", request.getWhere())
@@ -173,7 +173,7 @@ public class DynamoDBService {
                 .withReturnValues(ReturnValue.UPDATED_NEW);
         //Updating the employeeRequestTable
         UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
-        System.out.println("Outcome: "+ employeeRequestOutcome.getItem().toJSONPretty());
+        System.out.println("Outcome: " + employeeRequestOutcome.getItem().toJSONPretty());
         //employeeRequestTable.updateItem(requestEntryUpdate);
     }
 
@@ -182,28 +182,19 @@ public class DynamoDBService {
         //Selecting the table from DynamoDB
         Table employeeRequestTable = dynamoDB.getTable(tableName);
         System.out.println("Table setStatus: " + employeeRequestTable.toString());
-        
+
         //Creating UpdateItemSpec for the updates to be made
-        
+
         UpdateItemSpec requestEntryUpdate = new UpdateItemSpec()
                 .withPrimaryKey("requestId", id)
                 .withUpdateExpression("set #s=:val1")
                 .withNameMap(new NameMap()
-                		.with("#s", "status"))
+                        .with("#s", "status"))
                 .withValueMap(new ValueMap()
                         .withString(":val1", status))
                 .withReturnValues(ReturnValue.UPDATED_NEW);
         //Updating the requestStatus as status for requestId = id
         UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
-        System.out.println("Outcome: "+ employeeRequestOutcome.getItem().toJSONPretty());
+        System.out.println("Outcome: " + employeeRequestOutcome.getItem().toJSONPretty());
     }
-
-/*    public void setDocLink(final String id, final String docLink) {
-        //Selecting the table from DynamoDB
-        Table employeeRequestTable = dynamoDB.getTable(tableName);
-        System.out.println("Table set doclink: " + employeeRequestTable.toString());
-        //Updating the requestStatus as status for requestId = id
-        UpdateItemOutcome employeeRequestOutcome =
-        employeeRequestTable.updateItem(id, new AttributeUpdate("documentLink").put(docLink));
-    }*/
 }
