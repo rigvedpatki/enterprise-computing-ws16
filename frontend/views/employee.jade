@@ -55,7 +55,7 @@ html
                 td=reimbursement.why
                 td=reimbursement.when
                 td=reimbursement.amount
-                td: a( href=''+reimbursement.document): img(src='/images/file.png' alt='file')
+                td: a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file')
                 td=reimbursement.status
                 td
                   form(action='/employee/' + reimbursement.requestId, method='get')

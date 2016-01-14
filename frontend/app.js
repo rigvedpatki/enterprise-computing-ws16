@@ -113,9 +113,9 @@ app.post('/employee/requests', upload.single('document'), function (req, res) {
 });
 
 // should be used to overwrite the request's values (by employee)
-app.post('/employee/requests/:id', function (req, res) {
+app.post('/employee/requests/:requestId', upload.single('document'), function (req, res) {
     if (employeeAuth(req)) {
-        var requestId = req.params['id'];
+		var file = req.file;
         var requestValues = {
 			requestId: req.body['requestId'],
             name: req.body['name'],
@@ -124,8 +124,8 @@ app.post('/employee/requests/:id', function (req, res) {
             when: req.body['when'],
             amount: req.body['amount']
         };
-		console.log("request id : %s \n request values: %j in app",requestId, requestValues );
-        api.updateRequest(requestId, requestValues, function(err){
+		console.log("\n request values: %j in app", requestValues );
+        api.updateRequest(requestValues, file, function(err){
             if (err) {
                 res.statusCode = 500;
                 res.send(err);

@@ -6,7 +6,7 @@ html
     div
     fieldset
       legend Update reimbursement
-      form(action='/employee/requests/'+ reimbursement.requestId,method='post')
+      form(action='/employee/requests/'+ reimbursement.requestId, enctype='multipart/form-data', method='post')
         p Reimbursement-ID: 
           input(name='requestId',type='text',value=reimbursement.requestId,readonly="readonly")
         p Name: 
@@ -20,6 +20,6 @@ html
         p Amount: 
           input(name='amount',type='number',value=reimbursement.amount)
         p Document: 
-          input(name='document',type='file',value=reimbursement.document)
+          input(name='document',type='file',size='50', accept='application/pdf,.docx,.doc,.zip')
         p  
           input(type="submit", value='Update reimbursement')

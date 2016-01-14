@@ -50,10 +50,18 @@ exports.createRequest = function (requestValues, file, callback) {
     });
 };
 
-exports.updateRequest = function (requestId, requestValues, callback) {
+exports.updateRequest = function (requestValues, file, callback) {
+	if (file) {
+        requestValues.fileName = file.originalname;
+        requestValues.file = fs.createReadStream(file.path);
+    }
+	console.log("request values in api : %j", requestValues );
     request.post({
-        url: BASE_URL + '/requests/' + requestId,
-        formData: requestValues	
+        url: BASE_URL + '/requests/' + requestValues.requestId,
+        formData: requestValues	,
+		headers: {
+            'enctype': 'multipart/form-data'
+        }
     }, function optionalCallback(err, httpResponse, body) {
 		console.log("err: %j, httpResonse: %j, body: %j", err, httpResponse, body);
         if (err) {
@@ -62,11 +70,11 @@ exports.updateRequest = function (requestId, requestValues, callback) {
             callback(null)
         }
     });
-	console.log("request values in api : %j", requestValues );
+	
 };
 
 exports.setStatus = function (requestId, newStatus, callback) {
-    request.put({
+    request.post({
         url: BASE_URL + '/requests/' + requestId + '/status',
         qs: {status: newStatus }
     }, function optionalCallback(err, httpResponse, body) {
