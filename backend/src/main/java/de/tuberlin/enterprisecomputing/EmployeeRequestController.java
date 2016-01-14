@@ -26,7 +26,6 @@ import java.util.UUID;
 public class EmployeeRequestController {
 
     final static String NO_DOCUMENT = "NO DOCUMENT";
-
     final static String MANAGER_EMAIL = "ec2015manager@gmail.com";
     final static String EMPLOYEE_EMAIL = "ec2015employee@gmail.com";
 
@@ -76,8 +75,9 @@ public class EmployeeRequestController {
         }
         String docLink = s3.generateURL(employeeRequest.getDocumentName(), fileAttached);
         employeeRequest.setDocumentLink(docLink);
-
-        System.out.println("In Update status : " + employeeRequest.toString());
+        //setting the status as modified
+        employeeRequest.setStatus("MODIFIED");
+        //System.out.println("In Update status : " + employeeRequest.toString());
         //if file not attached then do nothing.
         dynamo.updateRequest(requestId, employeeRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -111,7 +111,7 @@ public class EmployeeRequestController {
         Long currentTimeStamp = new Date().getTime();
         employeeRequest.setTimestamp(currentTimeStamp.toString());
         //Setting the status of document
-        employeeRequest.setStatus("Unchecked");
+        employeeRequest.setStatus("UNCHECKED");
         final boolean fileAttached = file != null && !file.isEmpty();
         employeeRequest.setDocumentLink(NO_DOCUMENT);
         employeeRequest.setDocumentName(NO_DOCUMENT);
@@ -139,7 +139,7 @@ public class EmployeeRequestController {
         dynamo.createRequestEntry(employeeRequest);
 
         //create a message and send to the manager
-        mail.sendMail(MANAGER_EMAIL);
+        mail.sendMail(MANAGER_EMAIL, employeeRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -147,7 +147,7 @@ public class EmployeeRequestController {
     public ResponseEntity<String> setStatus(@PathVariable String id, @RequestParam("status") String status) {
         dynamo.setStatus(id, status);
         //create a message and send to the employee
-        mail.sendMail(EMPLOYEE_EMAIL);
+        mail.sendMail(EMPLOYEE_EMAIL, id, status);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

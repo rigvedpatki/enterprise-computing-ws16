@@ -156,19 +156,21 @@ public class DynamoDBService {
 
         UpdateItemSpec requestEntryUpdate = new UpdateItemSpec()
                 .withPrimaryKey("requestId", id)
-                .withUpdateExpression("set #time=:val1, #when=:val2, #why=:val3, #where=:val4, #amount=:val5")
+                .withUpdateExpression("set #time=:val1, #when=:val2, #why=:val3, #where=:val4, #amount=:val5, #status=:val6")
                 .withNameMap(new NameMap()
                         .with("#time", "timestamp")
                         .with("#when", "when")
                         .with("#why", "why")
                         .with("#where", "where")
-                        .with("#amount", "amount"))
+                        .with("#amount", "amount")
+                		.with("#status" , "status"))
                 .withValueMap(new ValueMap()
                         .withString(":val1", request.getTimestamp())
                         .withString(":val2", request.getWhen())
                         .withString(":val3", request.getWhy())
                         .withString(":val4", request.getWhere())
-                        .withInt(":val5", request.getAmount()))
+                        .withInt(":val5", request.getAmount())
+                		.withString(":val6", request.getStatus()))
                 .withReturnValues(ReturnValue.UPDATED_NEW);
         //Updating the employeeRequestTable
         UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);
