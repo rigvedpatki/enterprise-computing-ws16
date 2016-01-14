@@ -1,11 +1,83 @@
 <!DOCTYPE html>
 <html>
+<style>
+body {
+    font: 100% Lucida Sans, Verdana;
+    margin: 20px 300px;
+    line-height: 26px;
+	overflow:auto;
+}
+#top {
+    background-color: #84c754;
+    color: #ffffff;
+    padding: 10px;
+	border-radius: 10px;
+    margin: 2px;
+}
+#navigation {
+    border: 1px solid #d4d4d4;
+	border-radius: 5px;
+    background-color: #f1f1f1;
+    padding: 10px;
+    line-height: 10px;
+	top: -45px;
+	left: 110px;
+	position: relative;
+	height: 45px;
+	width: 300px;
+	text-align:center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+	text-align:center;
+}
+
+li {
+    float: left;
+    border-right:1px solid #bbb;
+}
+
+li:last-child {
+    border-right: none;
+}
+
+li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #111;
+}
+
+li a:hover {
+	color: white;
+}
+
+.active {
+    background-color: #4CAF50;
+}
+</style>
 <head>
   <title>Awesome Reimbursement Application</title>
 </head>
 <body>
-  <h2>I am:</h2>
-  <p><a href="/employee">Employee</a></p>
-  <p><a href="/manager">Manager</a></p>
+  <div id="top">
+        <h1>Reimbursement Application</h1>
+		<h1>I am:</h1>
+	</div>
+  <div id="navigation">
+		<ul>
+            <li><a href="/employee">Employee</a></li>
+            <li><a href="/manager">Manager</a></li>
+        </ul>
+  </div>
 </body>
 </html>

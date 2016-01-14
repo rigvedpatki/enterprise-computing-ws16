@@ -1,52 +1,122 @@
 html
   style.
+    td {
+      padding:4px;
+    }
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
+      border-color: #ffffff;
+    }
+    body {
+      font: 100% Lucida Sans, Verdana;
+      margin: 20px 150px;
+      line-height: 26px;
+      color: #ffffff;
+    }
+    .wrapper {
+      position: relative;
+      overflow: auto;
+    }
+    #top {
+      background-color: #84c754;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 2px;
+    }
+    #reimbursements {
+      border-radius: 15px;
+      background-color: #FF7F50;
+      padding: 15px 12px 15px 15px;
+      margin: 5px 250px 5px 5px;
+      width: initial;
+    }
+    #infobox{
+      background-color: #32a4e7;
+      padding: 10px;
+      width: 250px;
+      right: 20px;
+      top: 15px;
+      position: absolute;
+      border-radius: 10px;
+      opacity: .9;
+    }
+    #bottom {
+      border: 1px solid #d4d4d4;
+      background-color: #f1f1f1;
+      text-align: center;
+      padding: 10px;
+      font-size: 70%;
+      line-height: 14px;
+      position: relative;
+      margin: 10px;
+      border-radius: 10px;
+      margin: 2px;
+      color: #000000;
     }
   head
     title!= title
   body
-    h1!= message
-    div
-     table(style='width:100%') 
-       thead
-         tr
-           th
-             | Reimbursement-ID
-           th
-             | Name
-           th
-             | Where
-           th
-             | Why
-           th
-             | When
-           th
-             | Amount
-           th
-             | Document
-           th
-             | Status
-           th
-             | Action
-        tbody 
-          each reimbursement in reimbursements
-            tr
-              td=reimbursement.requestId
-              td=reimbursement.name
-              td=reimbursement.where
-              td=reimbursement.why
-              td=reimbursement.when
-              td=reimbursement.amount
-              td: a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file')
-              td=reimbursement.status
-              td
-                form(action='/manager/requests/' + reimbursement.requestId + '/status', method='post')
-                  select(name='status')
-                    option(value='ACCEPTED')
-                      | Accepted
-                    option(value='DECLINED')
-                      | Declined
-                  input(type="submit", value='Update reimbursement-status')
-        
+    #top
+      h1!= message
+    .wrapper
+      #reimbursements
+       table(style='width:100%') 
+         thead
+           tr
+             th
+               | Reimbursement-ID
+             th
+               | Name
+             th
+               | Where
+             th
+               | Why
+             th
+               | When
+             th
+               | Amount
+             th
+               | Document
+             th
+               | Status
+             th
+               | Action
+          tbody 
+            each reimbursement in reimbursements
+              tr
+                td=reimbursement.requestId
+                td=reimbursement.name
+                td=reimbursement.where
+                td=reimbursement.why
+                td=reimbursement.when
+                td=reimbursement.amount
+                td(align="center"): a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="30px" height="30px")
+                if reimbursement.status=='ACCEPTED'
+                  td(align="center" width="150px"): img(src='/images/accepted.png' alt='file' width="30px" height="30px")
+                else if reimbursement.status=='DECLINED'
+                  td(align="center" width="100px"): img(src='/images/declined.png' alt='file' width="30px" height="30px")
+                else
+                  td(align="center" width="100px"): img(src='/images/unchecked.png' alt='file' width="30px" height="30px")
+                td
+                  form(action='/manager/requests/' + reimbursement.requestId + '/status', method='post')
+                    select(name='status')
+                      option(value='ACCEPTED')
+                        | Accepted
+                      option(value='DECLINED')
+                        | Declined
+                    input(type="submit", value='Update reimbursement-status')
+      #infobox
+        h3 Info
+        p
+          | Hi Mister Manager! On this page you can accept or decline submitted reimbursements.  <br>
+          img(src='/images/accepted.png' alt='file' width="30px" height="30px")
+          | : Reimbursement accepted <br>
+          img(src='/images/declined.png' alt='file' width="30px" height="30px") 
+          | : Reimbursement declined <br>
+          img(src='/images/unchecked.png' alt='file' width="30px" height="30px")
+          | : Decision pending <br>
+          img(src='/images/file.png' alt='file' width="30px" height="30px")
+          | : Download file <br>
+    #bottom
+      | &copy; TU Berlin, Enterprise Computing - Group 1: Jonathan Hei&szlig;, The-Anh Ly, Rigved Satish Patki, Maxim Tschumak

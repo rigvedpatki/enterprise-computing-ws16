@@ -1,33 +1,99 @@
 html
   style.
+    td {
+      padding:4px;
+    }
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
+      border-color: #ffffff;
+    }
+    body {
+      font: 100% Lucida Sans, Verdana;
+      margin: 20px 150px;
+      line-height: 26px;
+      color: #ffffff;
+    }
+    .wrapper {
+      position: relative;
+      overflow: auto;
+    }
+    #top {
+      background-color: #84c754;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 2px;
+    }
+    #submit, #reimbursements {
+      border-radius: 15px;
+      background-color: #FF7F50;
+      padding: 15px 12px 15px 15px;
+      margin: 5px 120px 5px 5px;
+      width: initial;
+    }
+    #infobox{
+      background-color: #32a4e7;
+      padding: 10px;
+      width: 250px;
+      right: 20px;
+      top: 15px;
+      position: absolute;
+      border-radius: 10px;
+      margin: 2px;
+      opacity: .9;
+    }
+    #bottom {
+      border: 1px solid #d4d4d4;
+      background-color: #f1f1f1;
+      text-align: center;
+      padding: 10px;
+      font-size: 70%;
+      line-height: 14px;
+      position: relative;
+      margin: 10px;
+      border-radius: 10px;
+      margin: 2px;
+      color: #000000;
     }
   head
+    link(rel='stylesheet', href='/stylesheets/employee.css')
     title!= title
   body
-    h1!= message
-  div
-    fieldset
-      legend Submit reimbursement
-      form(action='/employee/requests', enctype='multipart/form-data', method='post')
-        p Name: 
-          input(name='name',type='text')
-        p Where: 
-          input(name='where',type='text')
-        p Why: 
-          input(name='why',type='text')
-        p When: 
-          input(name='when',type='date')
-        p Amount: 
-          input(name='amount',type='number')
-        p Document: 
-          input(name='document',type='file', size='50', accept='application/pdf,.docx,.doc,.zip')
-        p  
-          input(name='submit', type='submit', value='Submit reimbursement')
-  div
-    p
+    #top
+        h1!= message
+  .wrapper
+    #submit
+      fieldset
+        legend Submit reimbursement
+        form(action='/employee/requests', enctype='multipart/form-data', method='post')
+          p Name: 
+            input(name='name',type='text')
+          p Where: 
+            input(name='where',type='text')
+          p Why: 
+            input(name='why',type='text')
+          p When: 
+            input(name='when',type='date')
+          p Amount: 
+            input(name='amount',type='number')
+          p Document: 
+            input(name='document',type='file', size='50', accept='application/pdf,.docx,.doc,.zip')
+          p  
+            input(name='submit', type='submit', value='Submit reimbursement')
+      #infobox
+        h3 Info
+        p
+          | Hi employee! Please submit any reimbursement requests on this page. If you have multiple documents, upload the documents in an archive.
+          img(src='/images/accepted.png' alt='file' width="30px" height="30px")
+          | : Reimbursement accepted <br>
+          img(src='/images/declined.png' alt='file' width="30px" height="30px") 
+          | : Reimbursement declined <br>
+          img(src='/images/unchecked.png' alt='file' width="30px" height="30px")
+          | : Decision pending <br>
+          img(src='/images/file.png' alt='file' width="30px" height="30px")
+          | : Download file <br>
+    #reimbursements
+      p
       table(style='width:100%') 
         thead
           tr
@@ -55,8 +121,15 @@ html
                 td=reimbursement.why
                 td=reimbursement.when
                 td=reimbursement.amount
-                td: a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file')
-                td=reimbursement.status
-                td
+                td(align="center"): a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="30px" height="30px")
+                if reimbursement.status=='ACCEPTED'
+                  td(align="center" width="150px"): img(src='/images/accepted.png' alt='file' width="30px" height="30px")
+                else if reimbursement.status=='DECLINED'
+                  td(align="center" width="100px"): img(src='/images/declined.png' alt='file' width="30px" height="30px")
+                else
+                  td(align="center" width="100px"): img(src='/images/unchecked.png' alt='file' width="30px" height="30px")
+                td(align="center")
                   form(action='/employee/' + reimbursement.requestId, method='get')
                     input(type="submit", value='Update reimbursement') 
+    #bottom
+      | &copy; TU Berlin, Enterprise Computing - Group 1: Jonathan Hei&szlig;, The-Anh Ly, Rigved Satish Patki, Maxim Tschumak

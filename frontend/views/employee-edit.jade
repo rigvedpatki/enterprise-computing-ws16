@@ -1,27 +1,84 @@
 html
+  style.
+    body {
+      font: 100% Lucida Sans, Verdana;
+      margin: 20px 150px;
+      line-height: 26px;
+      color: #ffffff;
+    }
+    .wrapper {
+      position: relative;
+      overflow: auto;
+    }
+    #top {
+      background-color: #84c754;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 2px;
+    }
+    #submit{
+      border-radius: 15px;
+      background-color: #FF7F50;
+      padding: 15px 12px 15px 15px;
+      margin: 5px 120px 5px 5px;
+      width: initial;
+    }
+    #infobox {
+      background-color: #32a4e7;
+      padding: 10px;
+      width: 250px;
+      right: 20px;
+      top: 15px;
+      position: absolute;
+      border-radius: 10px;
+      margin: 2px;
+      opacity: .9;
+    }
+    #bottom {
+      border: 1px solid #d4d4d4;
+      background-color: #f1f1f1;
+      text-align: center;
+      padding: 10px;
+      font-size: 70%;
+      line-height: 14px;
+      position: relative;
+      margin: 10px;
+      border-radius: 10px;
+      margin: 2px;
+      color: #000000;
+    }
   head
     title!= title
   body
-    h1!= message
-    div
-    fieldset
-      legend Update reimbursement
-      form(action='/employee/requests/'+ reimbursement.requestId, enctype='multipart/form-data', method='post')
-        p Reimbursement-ID: 
-          input(name='requestId',type='text',value=reimbursement.requestId,readonly="readonly")
-        p Name: 
-          input(name='name',type='text',value=reimbursement.name,readonly="readonly")
-        p Where: 
-          input(name='where',type='text',value=reimbursement.where)
-        p Why: 
-          input(name='why',type='text',value=reimbursement.why)
-        p When: 
-          input(name='when',type='date',value=reimbursement.when)
-        p Amount: 
-          input(name='amount',type='number',value=reimbursement.amount)
-        p Old Document:
-          a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file')
-        p Add new document: 
-          input(name='document',type='file',size='50', accept='application/pdf,.docx,.doc,.zip')
-        p  
-          input(type="submit", value='Update reimbursement')
+    #top
+      h1
+        | Edit reimbursement from employee: #{reimbursement.name} 
+    .wrapper
+      #submit
+        fieldset
+          legend Update reimbursement
+          form(action='/employee/requests/'+ reimbursement.requestId, enctype='multipart/form-data', method='post')
+            p Reimbursement-ID: 
+              input(name='requestId',type='text',value=reimbursement.requestId,readonly="readonly")
+            p Name: 
+              input(name='name',type='text',value=reimbursement.name,readonly="readonly")
+            p Where: 
+              input(name='where',type='text',value=reimbursement.where)
+            p Why: 
+              input(name='why',type='text',value=reimbursement.why)
+            p When: 
+              input(name='when',type='date',value=reimbursement.when)
+            p Amount: 
+              input(name='amount',type='number',value=reimbursement.amount)
+            p Old Document: 
+              a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="40px" height="40px")
+            p Add new document: 
+              input(name='document',type='file',size='50', accept='application/pdf,.docx,.doc,.zip')
+            p  
+              input(type="submit", value='Update reimbursement')
+      #infobox
+        h3 Info
+        p
+          | Hi <strong>#{reimbursement.name}</strong>! On this page you can edit your submitted reimbursements. If you have multiple documents, upload the documents in an archive. Please note that re-uploading a file might overwrite already submitted files!
+    #bottom
+      | &copy; TU Berlin, Enterprise Computing - Group 1: Jonathan Hei&szlig;, The-Anh Ly, Rigved Satish Patki, Maxim Tschumak
