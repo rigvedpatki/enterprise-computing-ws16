@@ -17,7 +17,9 @@ public class EmployeeRequest {
     private String where;
     private int amount;
     //added URL link to the document stored to be displayed in the front end jade table.
-    private String document;
+    private String documentLink;
+    // Name of the Document
+    private String documentName;
     //status of the request
     private String status;
 
