@@ -2,7 +2,7 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 
-var ENDPOINT_URL = 'reimbursement-backend.elasticbeanstalk.com';
+var ENDPOINT_URL = 'reimbursement-prod.elasticbeanstalk.com';
 // var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
