@@ -5,9 +5,9 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.springframework.stereotype.Service;
 import com.amazonaws.HttpMethod;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -19,12 +19,12 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 @Service
 public class S3Service {
 
-    private final String S3_BUCKET = "reimbursement-docs";
+    private final static String S3_BUCKET = "reimbursement-docs";
     private AmazonS3 s3client;
 
     public S3Service() {
-        s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-        //s3client = new AmazonS3Client(new ProfileCredentialsProvider().getCredentials());
+        //s3client = new AmazonS3Client(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+        s3client = new AmazonS3Client();
         s3client.setRegion(Region.getRegion(Regions.EU_WEST_1));
     }
 
@@ -34,27 +34,17 @@ public class S3Service {
     }
 
     public String generateURL(final String documentName, final boolean fileAttached) {
-    	
-    	if(fileAttached){
-    		GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(S3_BUCKET, documentName);
-    		urlRequest.setMethod(HttpMethod.GET);
-    		Calendar calendar = new GregorianCalendar();
-    		calendar.add(Calendar.MONTH, 1);
-    		Date nextMonth = calendar.getTime();
-    		urlRequest.setExpiration(nextMonth);
-    		URL url = s3client.generatePresignedUrl(urlRequest);
-        return url.toString();
-    	}else{
-    		return "No File Attached";
-    	}
+        if (fileAttached) {
+            GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(S3_BUCKET, documentName);
+            urlRequest.setMethod(HttpMethod.GET);
+            Calendar calendar = new GregorianCalendar();
+            calendar.add(Calendar.MONTH, 1);
+            Date nextMonth = calendar.getTime();
+            urlRequest.setExpiration(nextMonth);
+            URL url = s3client.generatePresignedUrl(urlRequest);
+            return url.toString();
+        } else {
+            return "No File Attached";
+        }
     }
-
-/*    public byte[] getFile(final String fileName) throws IOException {
-        // get s3Object
-        S3Object object = s3client.getObject(new GetObjectRequest(S3_BUCKET, fileName));
-        // convert objectData to byte[]
-        InputStream objectData = object.getObjectContent();
-        byte[] bytes = IOUtils.toByteArray(objectData);
-        return bytes;
-    }*/
 }

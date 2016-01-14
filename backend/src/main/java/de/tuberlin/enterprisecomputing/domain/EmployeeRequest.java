@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeRequest {
-
     private String requestId;
     private String name;
     private String timestamp;
@@ -22,5 +21,4 @@ public class EmployeeRequest {
     private String documentName;
     //status of the request
     private String status;
-
 }

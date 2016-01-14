@@ -20,7 +20,7 @@ var EMPLOYEE_PASSWORD = ')AybMslaS/p|o[si;xlv';
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -97,7 +97,7 @@ app.post('/employee/requests', upload.single('document'), function (req, res) {
             when: req.body['when'],
             amount: req.body['amount']
         };
-        api.createRequest(requestValues, file, function (err, id) {
+        api.createRequest(requestValues, file, function (err) {
             if (err) {
                 res.statusCode = 500;
                 res.send(err);
@@ -115,17 +115,16 @@ app.post('/employee/requests', upload.single('document'), function (req, res) {
 // should be used to overwrite the request's values (by employee)
 app.post('/employee/requests/:requestId', upload.single('document'), function (req, res) {
     if (employeeAuth(req)) {
-		var file = req.file;
+        var file = req.file;
         var requestValues = {
-			requestId: req.body['requestId'],
+            requestId: req.body['requestId'],
             name: req.body['name'],
             where: req.body['where'],
             why: req.body['why'],
             when: req.body['when'],
             amount: req.body['amount']
         };
-		console.log("\n request values: %j in app", requestValues );
-        api.updateRequest(requestValues, file, function(err){
+        api.updateRequest(requestValues, file, function (err) {
             if (err) {
                 res.statusCode = 500;
                 res.send(err);
@@ -145,7 +144,7 @@ app.post('/manager/requests/:id/status', function (req, res) {
     if (managerAuth(req)) {
         var requestId = req.params['id'];
         var requestStatus = req.body['status'];
-        api.setStatus(requestId, requestStatus, function(err){
+        api.setStatus(requestId, requestStatus, function (err) {
             if (err) {
                 res.statusCode = 500;
                 res.send(err);
@@ -163,19 +162,11 @@ app.post('/manager/requests/:id/status', function (req, res) {
 // reads basic auth user and password from the request header
 managerAuth = function (req) {
     var credentials = auth(req);
-    if (!credentials || credentials.name !== MANAGER_USERNAME || credentials.pass !== MANAGER_PASSWORD) {
-        return false;
-    } else {
-        return true;
-    }
+    return !(!credentials || credentials.name !== MANAGER_USERNAME || credentials.pass !== MANAGER_PASSWORD);
 };
 
 // reads basic auth user and password from the request header
 employeeAuth = function (req) {
     var credentials = auth(req);
-    if (!credentials || credentials.name !== EMPLOYEE_USERNAME || credentials.pass !== EMPLOYEE_PASSWORD) {
-        return false;
-    } else {
-        return true;
-    }
+    return !(!credentials || credentials.name !== EMPLOYEE_USERNAME || credentials.pass !== EMPLOYEE_PASSWORD);
 };
