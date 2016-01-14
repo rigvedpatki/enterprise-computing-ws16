@@ -3,7 +3,6 @@ package de.tuberlin.enterprisecomputing.integrations;
 import org.springframework.stereotype.Service;
 import com.amazonaws.services.simpleemail.*;
 import com.amazonaws.services.simpleemail.model.*;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.*;
 
 @Service
@@ -19,7 +18,7 @@ public class MailService {
     public MailService() {
         // Initialise SES client, set region
         //client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-        client = new AmazonSimpleEmailServiceClient(new ProfileCredentialsProvider().getCredentials());
+        client = new AmazonSimpleEmailServiceClient();
         Region REGION = Region.getRegion(Regions.EU_WEST_1);
         client.setRegion(REGION);
     }

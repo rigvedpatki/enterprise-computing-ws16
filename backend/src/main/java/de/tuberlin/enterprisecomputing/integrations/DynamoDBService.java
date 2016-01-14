@@ -4,7 +4,6 @@ package de.tuberlin.enterprisecomputing.integrations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -41,7 +40,7 @@ public class DynamoDBService {
         //initialise DynamoDB client
         //Creating a DynamoDB client object
         // dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
-        dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider().getCredentials());
+        dynamoDBClient = new AmazonDynamoDBClient();
         //Using EU_WEST_1 region for DynamoDB client
         dynamoDBClient.setRegion(Region.getRegion(Regions.EU_WEST_1));
         // Creating instance of DynamoDB
