@@ -84,6 +84,9 @@ public class EmployeeRequestController {
         
         dynamo.updateRequest(requestId, employeeRequest);
         
+        //create a message and send to the manager that the request has been modified
+        mail.sendMail(MANAGER_EMAIL, employeeRequest);
+        
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
