@@ -53,7 +53,7 @@ exports.updateRequest = function (requestValues, file, callback) {
         requestValues.fileName = file.originalname;
         requestValues.file = fs.createReadStream(file.path);
     }
-    request.put({
+    request.post({
         url: BASE_URL + '/requests/' + requestValues.requestId,
         formData: requestValues,
         headers: {

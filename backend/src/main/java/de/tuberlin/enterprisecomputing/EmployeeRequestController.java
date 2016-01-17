@@ -43,7 +43,7 @@ public class EmployeeRequestController {
         return dynamo.getRequestById(requestId);
     }
 
-    @RequestMapping(path = "/requests/{requestId}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/requests/{requestId}", method = RequestMethod.POST)
     public ResponseEntity<String> updateRequest(@PathVariable String requestId, @RequestParam("where") String where,
                                                 @RequestParam("why") String why, @RequestParam("when") String when,
                                                 @RequestParam("amount") int amount, @RequestParam(value = "fileName", required = false) String fileName,
