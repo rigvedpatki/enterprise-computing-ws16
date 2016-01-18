@@ -50,6 +50,7 @@ public class EmployeeRequestController {
                                                 @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         //filling the updated values
         final EmployeeRequest employeeRequest = new EmployeeRequest();
+        employeeRequest.setRequestId(requestId);
         employeeRequest.setWhere(where);
         employeeRequest.setWhy(why);
         employeeRequest.setWhen(when);
@@ -85,7 +86,7 @@ public class EmployeeRequestController {
         dynamo.updateRequest(requestId, employeeRequest);
         
         //create a message and send to the manager that the request has been modified
-        mail.sendMail(MANAGER_EMAIL, requestId, employeeRequest.getStatus());
+        mail.sendMail(MANAGER_EMAIL, employeeRequest);
         
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
