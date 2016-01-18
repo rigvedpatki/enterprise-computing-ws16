@@ -71,7 +71,10 @@ html
             p Amount: 
               input(name='amount',type='number',value=reimbursement.amount)
             p Old Document: 
-              a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="40px" height="40px")
+              if reimbursement.documentLink=='NO DOCUMENT'
+                td(align="center" width="100px"): img(src='/images/declined.png' alt='file' width="30px" height="30px")
+              else
+                td(align="center"): a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="30px" height="30px")
             p Add new document: 
               input(name='document',type='file',size='50', accept='application/pdf,.docx,.doc,.zip')
             p  
@@ -79,6 +82,10 @@ html
       #infobox
         h3 Info
         p
-          | Hi <strong>#{reimbursement.name}</strong>! On this page you can edit your submitted reimbursements. If you have multiple documents, upload the documents in an archive. Please note that re-uploading a file might overwrite already submitted files!
+          | Hi <strong>#{reimbursement.name}</strong>! On this page you can edit your submitted reimbursements. If you have multiple documents, upload the documents in an archive. Please note that re-uploading a file might overwrite already submitted files!<br>
+          img(src='/images/declined.png' alt='file' width="30px" height="30px")
+          | : No file uploaded <br>
+          img(src='/images/file.png' alt='file' width="30px" height="30px")
+          | : Download file <br>
     #bottom
       | &copy; TU Berlin, Enterprise Computing - Group 1: Jonathan Hei&szlig;, The-Anh Ly, Rigved Satish Patki, Maxim Tschumak

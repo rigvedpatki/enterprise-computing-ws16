@@ -3,7 +3,7 @@ var request = require('request');
 var fs = require('fs');
 
 var ENDPOINT_URL = 'reimbursement-prod.elasticbeanstalk.com';
-// var ENDPOINT_URL = 'localhost';
+//var ENDPOINT_URL = 'localhost';
 var BASIC_AUTH_USER = 'api-user';
 var BASIC_AUTH_PASSWORD = 'O9VOG;|g$ia_Jc;EQ<&5';
 var BASE_URL = 'http://' + BASIC_AUTH_USER + ':' + BASIC_AUTH_PASSWORD + '@' + ENDPOINT_URL;
@@ -53,7 +53,7 @@ exports.updateRequest = function (requestValues, file, callback) {
         requestValues.fileName = file.originalname;
         requestValues.file = fs.createReadStream(file.path);
     }
-    request.put({
+    request.post({
         url: BASE_URL + '/requests/' + requestValues.requestId,
         formData: requestValues,
         headers: {

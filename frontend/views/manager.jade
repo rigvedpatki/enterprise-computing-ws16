@@ -91,7 +91,10 @@ html
                 td=reimbursement.why
                 td=reimbursement.when
                 td=reimbursement.amount
-                td(align="center"): a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="30px" height="30px")
+                if reimbursement.documentLink=='NO DOCUMENT'
+                  td(align="center" width="100px"): img(src='/images/declined.png' alt='file' width="30px" height="30px")
+                else
+                  td(align="center"): a( href=''+reimbursement.documentLink): img(src='/images/file.png' alt='file' width="30px" height="30px")
                 if reimbursement.status=='ACCEPTED'
                   td(align="center" width="150px"): img(src='/images/accepted.png' alt='file' width="30px" height="30px")
                 else if reimbursement.status=='DECLINED'
@@ -113,7 +116,8 @@ html
           img(src='/images/accepted.png' alt='file' width="30px" height="30px")
           | : Reimbursement accepted <br>
           img(src='/images/declined.png' alt='file' width="30px" height="30px") 
-          | : Reimbursement declined <br>
+          | : Reimbursement declined/ <br>
+          | No file uploaded <br>
           img(src='/images/unchecked.png' alt='file' width="30px" height="30px")
           | : Decision pending <br>
           img(src='/images/file.png' alt='file' width="30px" height="30px")

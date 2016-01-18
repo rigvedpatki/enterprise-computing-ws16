@@ -4,6 +4,7 @@ package de.tuberlin.enterprisecomputing.integrations;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -39,7 +40,7 @@ public class DynamoDBService {
     public DynamoDBService() {
         //initialise DynamoDB client
         //Creating a DynamoDB client object
-        // dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
+        //dynamoDBClient = new AmazonDynamoDBClient(new ProfileCredentialsProvider("enterprise-computing-ws16").getCredentials());
         dynamoDBClient = new AmazonDynamoDBClient();
         //Using EU_WEST_1 region for DynamoDB client
         dynamoDBClient.setRegion(Region.getRegion(Regions.EU_WEST_1));
@@ -151,26 +152,28 @@ public class DynamoDBService {
     public void updateRequest(final String id, final EmployeeRequest request) {
 
         Table employeeRequestTable = dynamoDB.getTable(tableName);
-        //System.out.println("Table updateRequest: " + employeeRequestTable.toString());
+        System.out.println("Table updateRequest: " + employeeRequestTable.toString());
         //Creating UpdateItemSpec for the updates to be made
 
         UpdateItemSpec requestEntryUpdate = new UpdateItemSpec()
                 .withPrimaryKey("requestId", id)
-                .withUpdateExpression("set #time=:val1, #when=:val2, #why=:val3, #where=:val4, #amount=:val5, #status=:val6")
+                .withUpdateExpression("set #time=:val1, #when=:val2, #why=:val3, #where=:val4, #amount=:val5, #status=:val6, #link=:val7")
                 .withNameMap(new NameMap()
                         .with("#time", "timestamp")
                         .with("#when", "when")
                         .with("#why", "why")
                         .with("#where", "where")
                         .with("#amount", "amount")
-                		.with("#status" , "status"))
+                		.with("#status", "status")
+                		.with("#link", "documentLink"))
                 .withValueMap(new ValueMap()
                         .withString(":val1", request.getTimestamp())
                         .withString(":val2", request.getWhen())
                         .withString(":val3", request.getWhy())
                         .withString(":val4", request.getWhere())
                         .withInt(":val5", request.getAmount())
-                		.withString(":val6", request.getStatus()))
+                		.withString(":val6", request.getStatus())
+                		.withString(":val7", request.getDocumentLink()))
                 .withReturnValues(ReturnValue.UPDATED_NEW);
         //Updating the employeeRequestTable
         UpdateItemOutcome employeeRequestOutcome = employeeRequestTable.updateItem(requestEntryUpdate);

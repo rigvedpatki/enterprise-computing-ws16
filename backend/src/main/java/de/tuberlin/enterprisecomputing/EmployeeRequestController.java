@@ -43,13 +43,15 @@ public class EmployeeRequestController {
         return dynamo.getRequestById(requestId);
     }
 
-    @RequestMapping(path = "/requests/{requestId}", method = RequestMethod.PUT)
-    public ResponseEntity<String> updateRequest(@PathVariable String requestId, @RequestParam("where") String where,
+    @RequestMapping(path = "/requests/{requestId}", method = RequestMethod.POST)
+    public ResponseEntity<String> updateRequest(@PathVariable String requestId, @RequestParam("where") String where,@RequestParam("name") String name,
                                                 @RequestParam("why") String why, @RequestParam("when") String when,
                                                 @RequestParam("amount") int amount, @RequestParam(value = "fileName", required = false) String fileName,
                                                 @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         //filling the updated values
         final EmployeeRequest employeeRequest = new EmployeeRequest();
+        employeeRequest.setRequestId(requestId);
+        employeeRequest.setName(name);
         employeeRequest.setWhere(where);
         employeeRequest.setWhy(why);
         employeeRequest.setWhen(when);
@@ -64,6 +66,8 @@ public class EmployeeRequestController {
             String[] ext = fileName.split("\\.");
             String documentName = requestId + "." + ext[1];
             employeeRequest.setDocumentName(documentName);
+            String docLink = s3.generateURL(employeeRequest.getDocumentName(), fileAttached);
+            employeeRequest.setDocumentLink(docLink);
             byte[] bytes = file.getBytes();
             File localFile = new File(employeeRequest.getDocumentName());
             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(localFile));
@@ -72,14 +76,19 @@ public class EmployeeRequestController {
 
             // upload the locally stored file to S3
             s3.storeFile(localFile.getName(), localFile);
+
         }
-        String docLink = s3.generateURL(employeeRequest.getDocumentName(), fileAttached);
-        employeeRequest.setDocumentLink(docLink);
+      //if file not attached then do nothing.
+
         //setting the status as modified
         employeeRequest.setStatus("MODIFIED");
-        //System.out.println("In Update status : " + employeeRequest.toString());
-        //if file not attached then do nothing.
+        System.out.println("Update : " + employeeRequest.toString());
+        
         dynamo.updateRequest(requestId, employeeRequest);
+        
+        //create a message and send to the manager that the request has been modified
+        mail.sendMail(MANAGER_EMAIL, employeeRequest);
+        
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -134,7 +143,7 @@ public class EmployeeRequestController {
             // upload the locally stored file to S3
             s3.storeFile(localFile.getName(), localFile);
         }
-
+        System.out.println("Update : " + employeeRequest.toString());
         // store employee request
         dynamo.createRequestEntry(employeeRequest);
 
