@@ -44,13 +44,14 @@ public class EmployeeRequestController {
     }
 
     @RequestMapping(path = "/requests/{requestId}", method = RequestMethod.POST)
-    public ResponseEntity<String> updateRequest(@PathVariable String requestId, @RequestParam("where") String where,
+    public ResponseEntity<String> updateRequest(@PathVariable String requestId, @RequestParam("where") String where,@RequestParam("name") String name,
                                                 @RequestParam("why") String why, @RequestParam("when") String when,
                                                 @RequestParam("amount") int amount, @RequestParam(value = "fileName", required = false) String fileName,
                                                 @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         //filling the updated values
         final EmployeeRequest employeeRequest = new EmployeeRequest();
         employeeRequest.setRequestId(requestId);
+        employeeRequest.setName(name);
         employeeRequest.setWhere(where);
         employeeRequest.setWhy(why);
         employeeRequest.setWhen(when);
